@@ -1,6 +1,7 @@
 package games.ttd;
 
 import core.Config;
+import core.Director;
 
 public class TTDMain {
 
@@ -8,8 +9,12 @@ public class TTDMain {
 		Config config = new Config();
 		config.parseArgs(args);
 		config.port = 12317;
-		System.out.println("TTD Will not start!");
-		//new Director(new PlayerFactory(), new GameFactory()).run(config);
+        /* yolo hard code, should make these into options later */
+        int boardSize = 10;
+        int numTypes = 5;
+        int numProducers = 15;
+        int numConsumers = 45;
+        new Director(new PlayerFactory(), new GameFactory(boardSize, numTypes, numProducers, numConsumers)).run(config);
 	}
 
 }
