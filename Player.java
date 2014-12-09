@@ -84,10 +84,10 @@ public class Player implements PersistentPlayer {
 		}
 		System.out.println (name.hashCode());
         // fix this for BABMODE
-		if (name.hashCode() == 1658738906) {
-			connection = new MINARWIN();
-			name = "Putin";
-		}
+		//if (name.hashCode() == 1658738906) {
+		//	connection = new MINARWIN();
+		//	name = "Putin";
+		//}
 	}
 	
 
@@ -100,8 +100,8 @@ public class Player implements PersistentPlayer {
 		return colour;
 	}
 
-	public static boolean isMINARWIN(PersistentPlayer p) {
-		return p.getConnection() instanceof MINARWIN;
-	}
+	//public static boolean isMINARWIN(PersistentPlayer p) {
+	//	return p.getConnection() instanceof MINARWIN;
+	//}
 }
 
