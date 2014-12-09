@@ -1,4 +1,4 @@
-package games.phaisdev;
+package games.ttd;
 
 import core.interfaces.PersistentPlayer;
 import core.interfaces.PlayerBuilder;

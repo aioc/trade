@@ -1,4 +1,4 @@
-package games.phaisdev;
+package games.ttd;
 
 import java.util.Random;
 
