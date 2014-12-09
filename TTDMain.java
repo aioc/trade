@@ -2,7 +2,7 @@ package games.ttd;
 
 import core.Config;
 
-public class Main {
+public class TTDMain {
 
 	public static void main(String[] args) {
 		Config config = new Config();
