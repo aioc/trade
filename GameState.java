@@ -9,7 +9,7 @@ public class GameState {
 	private int boardSize;
     private int numTypes;
     private int numProducers;
-    private int numConsumers
+    private int numConsumers;
 	private GamePerson[] allPlayers;
 	private List<Integer> killStart;
 	
