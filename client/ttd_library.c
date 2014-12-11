@@ -249,22 +249,6 @@ static int handleGameOver(char *args) {
 //  MAIN COMMAND LOOP FUNCTIONS
 //
 
-// Will read from input until either max_read - 1 characters are read,
-// or new line encountered. The last character will always be \0, and
-// no new line.
-// Returns 0 on success, else -1 for failure (usually connection closed).
-static int getLine(char *buf, int max_read) {
-	int i;
-	for (i = 0; i < max_read - 1; i++) {
-		if (read(sock, &buf[i], 1) <= 0) {
-			return -1;
-		}
-		if (buf[i] == '\n' || buf[i] == '\r') break;
-	}
-	buf[i] = '\0';
-	return 0;
-}
-
 // Takes in arguments, returns 0 on success.
 typedef int (*command_func)(char *);
 
@@ -285,6 +269,31 @@ static struct command commands[] = {
 	{"INVEST", handleInvest},
 	{"GAMEOVER", handleGameOver},
 };
+
+
+/**********************************************
+ *                                            *
+ *         IF THIS IS DONE CORRECTLY,         *
+ *        YOU WILL NOT HAVE TO CHANGE         *
+ *          STUFF BELOW THIS COMMENT          *
+ *                                            *
+ **********************************************/
+
+// Will read from input until either max_read - 1 characters are read,
+// or new line encountered. The last character will always be \0, and
+// no new line.
+// Returns 0 on success, else -1 for failure (usually connection closed).
+static int getLine(char *buf, int max_read) {
+	int i;
+	for (i = 0; i < max_read - 1; i++) {
+		if (read(sock, &buf[i], 1) <= 0) {
+			return -1;
+		}
+		if (buf[i] == '\n' || buf[i] == '\r') break;
+	}
+	buf[i] = '\0';
+	return 0;
+}
 
 static void mainLoop(void) {
 	char buf[1000];
