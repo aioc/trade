@@ -70,6 +70,19 @@ public class GameRunner implements GameInstance {
 
 	@Override
 	public void begin() {
+        // INITIAL STATE
+        List<Producer> prods = state.getProducers();
+        List<Consumer> cons = state.getConsumers();
+        for (int i = 0; i < players.size(); i++) {
+            PersistentPlayer p = players.get(i);
+            ClientConnection connection = p.getConnection();
+            if (!connection.isConnected()) continue;
+            for (int j = 0; j < prods.size(); j++)
+                p.getConnection().sendInfo("PROD " + prods.get(i));
+            for (int j = 0; j < cons.size(); j++)
+                p.getConnection().sendInfo("CONS " + cons.get(i));
+        }
+        
 		while (results.size() < players.size() - 1 /* && moves_exist() */) {
 			for (int i = 0; i < players.size(); i++) {
 				PersistentPlayer p = players.get(i);
