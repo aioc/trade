@@ -78,8 +78,7 @@ public class GameState {
 	}
 
 	public boolean isValidAction(int playerID, Action a) {
-        // TODO fix this 
-        return false;
+        return a.getMove() != Turn.INVALID && (a.getMove().x() < boardSize && a.getMove().y() < boardSize && a.getMove().x() >= 0 && a.getMove().y() >= 0);
 	}
 
 }

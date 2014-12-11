@@ -21,6 +21,14 @@ public enum Turn {
         this.x = x;
         this.y = y;
     }
+
+    public int x() {
+        return this.x;
+    }
+
+    public int y() {
+        return this.y;
+    }
 	
 	public static Turn findTurn(int dir) {
 		for (Turn m: Turn.values()) {
