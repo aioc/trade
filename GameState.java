@@ -139,6 +139,7 @@ public class GameState {
 					continue tryagain;
 				}
 			}
+			break;
 		}
 		Producer newProducer = new Producer(producers.get(index));
 		newProducer.x = newX;
@@ -166,6 +167,7 @@ public class GameState {
 					continue tryagain;
 				}
 			}
+			break;
 		}
 		Consumer newConsumer = new Consumer(consumers.get(index));
 		newConsumer.x = newX;
