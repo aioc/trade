@@ -15,7 +15,7 @@ public class GamePerson {
     public Turn lastTurn;
     public Statistics stats;
 
-    public GamePerson(Position p, int money) {
+    public GamePerson(int money) {
         this.money = money;
         tracks = new ArrayList<Track>();
         lastTurn = Turn.NOP;
