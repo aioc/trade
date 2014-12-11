@@ -60,65 +60,37 @@ public class GameState {
 		// TODO: jump people in random order. (java.util.Collections.shuffle() a range of indices)
 		for (int iter = 0; iter < iterations; iter++) {
 			for (int i = 0; i < numProducers; i++) {
-				tryJumpProducer(i, neighbourhoodRadius, sameIntolerence, differentRequirement, nondifferentIntolerence);
+                tryJump(i, neighbourhoodRadius, sameIntolerence, differentRequirement, nondifferentIntolerence, producers, consumers);
 			}
 			for (int i = 0; i < numConsumers; i++) {
-				tryJumpConsumer(i, neighbourhoodRadius, sameIntolerence, differentRequirement, nondifferentIntolerence);
+                tryJump(i, neighbourhoodRadius, sameIntolerence, differentRequirement, nondifferentIntolerence, consumers, producers);
 			}
-		}
-	}
-	
-	private boolean tryJumpProducer(int index, int neighbourhoodRadius, double sameIntolerence, int differentRequirement, double nondifferentIntolerence) {
-		double jumpChance = 0.0;
-		for (int i = 0; i < numProducers; i++) {
-			if (Math.abs(producers.get(i).x - producers.get(index).x) <= neighbourhoodRadius && 
-					Math.abs(producers.get(i).y - producers.get(index).y) <= neighbourhoodRadius) {
-				jumpChance += sameIntolerence;
-			}
-		}
-		int numDifferent = 0;
-		for (int i = 0; i < numConsumers; i++) {
-			if (Math.abs(consumers.get(i).x - producers.get(index).x) <= neighbourhoodRadius && 
-					Math.abs(consumers.get(i).y - producers.get(index).y) <= neighbourhoodRadius) {
-				numDifferent += 1;
-				
-			}
-		}
-		jumpChance += nondifferentIntolerence*Math.max(differentRequirement - numDifferent, 0);
-		Random rand = new Random();
-		if (rand.nextDouble() < jumpChance) {
-			jumpProducer(index);
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	private boolean tryJumpConsumer(int index, int neighbourhoodRadius, double sameIntolerence, int differentRequirement, double nondifferentIntolerence) {
-		double jumpChance = 0.0;
-		for (int i = 0; i < numConsumers; i++) {
-			if (Math.abs(consumers.get(i).x - consumers.get(index).x) <= neighbourhoodRadius && 
-					Math.abs(consumers.get(i).y - consumers.get(index).y) <= neighbourhoodRadius) {
-				jumpChance += sameIntolerence;
-			}
-		}
-		int numDifferent = 0;
-		for (int i = 0; i < numProducers; i++) {
-			if (Math.abs(producers.get(i).x - consumers.get(index).x) <= neighbourhoodRadius && 
-					Math.abs(producers.get(i).y - consumers.get(index).y) <= neighbourhoodRadius) {
-				numDifferent += 1;
-			}
-		}
-		jumpChance += nondifferentIntolerence*Math.max(differentRequirement - numDifferent, 0);
-		Random rand = new Random();
-		if (rand.nextDouble() < jumpChance) {
-			jumpConsumer(index);
-			return true;
-		} else {
-			return false;
 		}
 	}
 
+    private boolean tryJump(int index, int neighbourhoodRadius, double sameIntolerence, int differentRequirement, double nondifferentIntolerence, List<? extends Resource> mainType, List<? extends Resource> auxType) {
+        double jumpChance = 0.0;
+        for (int i = 0; i < mainType.size(); i++) {
+            if (Math.abs(mainType.get(i).x - mainType.get(index).x) <= neighbourhoodRadius && Math.abs(mainType.get(i).y - mainType.get(index).y) <= neighbourhoodRadius) {
+                jumpChance += sameIntolerence;
+            }
+        }
+        int numDifferent = 0;
+        for (int i = 0; i < auxType.size(); i++) {
+            if (Math.abs(auxType.get(i).x - mainType.get(index).x) <= neighbourhoodRadius && Math.abs(auxType.get(i).y - mainType.get(index).y) <= neighbourhoodRadius) {
+                numDifferent += 1;
+            }
+        }
+        jumpChance += nondifferentIntolerence*Math.max(differentRequirement - numDifferent, 0);
+        Random rand = new Random();
+        if (rand.nextDouble() < jumpChance) {
+            // TODO work out what this line should be.
+            doJump(index, mainType);
+            return true;
+        } else {
+            return false;
+        }
+    }
 	
     private void doJump(int index, List<? extends Resource> resources) {
 		Random rand = new Random();
