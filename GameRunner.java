@@ -77,9 +77,9 @@ public class GameRunner implements GameInstance {
             PersistentPlayer p = players.get(i);
             ClientConnection connection = p.getConnection();
             for (int j = 0; j < prods.size(); j++)
-                connection.sendInfo("PROD " + prods.get(i));
+                connection.sendInfo("PROD " + prods.get(j));
             for (int j = 0; j < cons.size(); j++)
-                connection.sendInfo("CONS " + cons.get(i));
+                connection.sendInfo("CONS " + cons.get(j));
         }
 
         while (results.size() < players.size() - 1 /* && moves_exist() */) {
