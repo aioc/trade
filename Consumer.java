@@ -4,7 +4,7 @@ public class Consumer {
     public int x, y;
     public int colour;
 
-    public Consumer(int x, int y, int c, int p) {
+    public Consumer(int x, int y, int c) {
         this.x = x;
         this.y = y;
         this.colour = c;
