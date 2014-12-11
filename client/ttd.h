@@ -84,8 +84,8 @@ extern "C" {
 	// ******** These two functions will be called *BEFORE* players take their turns for the round ********
 
 	/*
-	 *   This is called once for *every* player in the game (including those who
-	 *   have lost), telling you the amount of money they now have. The player
+	 *   This is called once for *every* player in the game (including those 
+	 *   with <= 0 money), telling you the amount of money they now have. The player
 	 *   id is such that 0 <= pid < numPlayers.
 	 *
 	 *   You are not required to call anything in here.
@@ -93,9 +93,7 @@ extern "C" {
 	void clientPlayerUpdate(int pid, int newMoney);
 
 	/*
-	 *   This is called once for all players who have > 0 money at the start of this
-	 *   turn, and will additionally be called for some players who have <= 0 money
-	 *   as the start of this turn (depending on if they made a move or not). This
+	 *   This is called once for all players who made a move last turn. This
 	 *   will only be called after every call to clientPlayerUpdate has been done.
 	 *
 	 *   This informs you of the move made by that player. 0 <= pid < numPlayers,
