@@ -13,6 +13,8 @@ public class GameState {
     private int numTypes;
     private int numProducers;
     private int numConsumers;
+    private int tick;
+    private boolean[][] paidOut;
 	private GamePerson[] allPlayers;
 	private List<Integer> killStart;
 	private List<Producer> producers;
@@ -21,12 +23,19 @@ public class GameState {
 	private GameVisualiser visualReport;
 
 	public GameState(int numPlayers, int boardSize, int numTypes, int numProducers, int numConsumers, GameVisualiser reportTo) {
+        this.tick = 0;
 		this.numPlayers = numPlayers;
 		this.boardSize = boardSize;
 		this.numTypes = numTypes;
 		this.numProducers = numProducers;
 		this.numConsumers = numConsumers;
 		this.visualReport = reportTo;
+        paidOut = new boolean[numProducers][numPlayers];
+        for (int i = 0; i < numProducers; i++) {
+            for (int j = 0; j < numPlayers; j++) {
+                paidOut[i][j] = false;
+            }
+        }
 		allPlayers = new GamePerson[numPlayers];
 		killStart = new ArrayList<Integer>();
 		producers = new ArrayList<Producer>();
@@ -127,14 +136,32 @@ public class GameState {
 
 	public void implementMoves() {
         // TODO implementMoves()
-
-        //for (each move) {
-		//	visualReport.addStateToVisualise(allPlayers, events);
-		//}
-		//for (int i = 0; i < numPlayers; i++) {
-		//	allPlayers[i].preAction = allPlayers[i].action;
-		//	allPlayers[i].action = Action.noAction(maxHealth);
-		//}
+        List<GameEvent> events = new ArrayList<GameEvent>();
+        // First of all, apply all moves.
+        for (int i = 0; i < numPlayers; i++) {
+            GamePerson newP = allPlayers[i].action.getMove().applyToPlayer(allPlayers[i], tick);
+            Track newTrack = newP.tracks.get(newP.tracks.size() - 1);
+            // TODO check these lines isn't bullshit.
+            int newX = newTrack.c + newTrack.dx;
+            int newY = newTrack.r + newTrack.dy;
+            if (newX < 0 || newX >= boardSize || newY < 0 || newY >= boardSize) {
+                newP = allPlayers[i];
+                allPlayers[i].lastTurn = Turn.NOP;
+            }
+            allPlayers[i] = newP;
+        }
+        for (int i = 0; i < numProducers; i++) {
+            for (int j = 0; j < numPlayers; j++) {
+                if (paidOut[i][j]) continue;
+                // TODO check if this producer should pay out.
+            }
+        }
+		visualReport.addStateToVisualise(allPlayers, events);
+		for (int i = 0; i < numPlayers; i++) {
+			allPlayers[i].preAction = allPlayers[i].action;
+			allPlayers[i].action = Action.noAction();
+		}
+        this.tick++;
 	}
 
 	public List<Producer> getProducers() {
