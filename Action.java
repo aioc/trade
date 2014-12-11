@@ -38,6 +38,11 @@ public class Action {
            return finalA;
     }
 
+    public static Action noAction() {
+        Turn m = Turn.NOP;
+        return new Action(m);
+    }
+
     public Turn getMove() {
         return move;
     }

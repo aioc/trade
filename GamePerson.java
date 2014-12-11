@@ -19,7 +19,7 @@ public class GamePerson {
         this.money = money;
         tracks = new ArrayList<Track>();
         lastTurn = Turn.NOP;
-        action = Action.noAction(money);
+        action = Action.noAction();
         preAction = action;
         stats = new Statistics();
     }
