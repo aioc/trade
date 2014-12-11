@@ -1,6 +1,6 @@
 package games.ttd;
 
-public class Consumer {
+public class Consumer extends Resource {
     public int x, y;
     public int colour;
 

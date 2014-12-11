@@ -1,6 +1,6 @@
 package games.ttd;
 
-public class Producer {
+public class Producer extends Resource {
     public int x, y;
     public int colour;
     public int payoff;
