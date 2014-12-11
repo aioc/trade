@@ -31,18 +31,34 @@ public class GameState {
 		killStart = new ArrayList<Integer>();
 		producers = new ArrayList<Producer>();
 		consumers = new ArrayList<Consumer>();
-		//java.util.Collections.shuffle();
-		// Testing generation.
+		
+		// Placeholder generation.
+		/*
 		for (int i = 0; i < numProducers; i++) {
 			producers.add(new Producer(boardSize/numProducers*i, 0, i, i+10));
 		}
 		for (int i = 0; i < numConsumers; i++) {
-			consumers.add(new Consumer(boardSize/numProducers*i, boardSize-1, i, i+10));
+			consumers.add(new Consumer(boardSize/numProducers*i, boardSize-1, i));
 		}
+		*/
+		nonbigotedGeneration(8, 0.05, 2, 0.05, 10, 15, 100);
 	}
 
-	private void nonbigotedGeneration(int neighbourhoodRadius, double sameIntolerence, int differentRequirement, double nondifferentIntolerence, int iterations) {
-		// TODO: randomly place consumers and producers.
+	private void nonbigotedGeneration(int neighbourhoodRadius, double sameIntolerence, int differentRequirement, double nondifferentIntolerence, int minPayoff, int maxPayoff, int iterations) {
+		Random rand = new Random();
+		for (int i = 0; i < numProducers; i++) {
+			producers.add(new Producer(0, 0, rand.nextInt(numTypes), rand.nextInt(maxPayoff-minPayoff+1)+minPayoff));
+		}
+		for (int i = 0; i < numConsumers; i++) {
+			consumers.add(new Consumer(0, 0, rand.nextInt(numTypes)));
+		}
+		for (int i = 0; i < numProducers; i++) {
+			jumpProducer(i);
+		}
+		for (int i = 0; i < numConsumers; i++) {
+			jumpConsumer(i);
+		}
+		// TODO: jump people in random order. (java.util.Collections.shuffle() a range of indices)
 		for (int iter = 0; iter < iterations; iter++) {
 			for (int i = 0; i < numProducers; i++) {
 				tryJumpProducer(i, neighbourhoodRadius, sameIntolerence, differentRequirement, nondifferentIntolerence);
