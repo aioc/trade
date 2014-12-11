@@ -52,10 +52,10 @@ public class GameState {
 			consumers.add(new Consumer(0, 0, rand.nextInt(numTypes)));
 		}
 		for (int i = 0; i < numProducers; i++) {
-			jumpProducer(i);
+            doJump(i, producers);
 		}
 		for (int i = 0; i < numConsumers; i++) {
-			jumpConsumer(i);
+            doJump(i, consumers);
 		}
 		// TODO: jump people in random order. (java.util.Collections.shuffle() a range of indices)
 		for (int iter = 0; iter < iterations; iter++) {
@@ -119,7 +119,8 @@ public class GameState {
 		}
 	}
 
-	private void jumpProducer(int index) {
+	
+    private void doJump(int index, List<? extends Resource> resources) {
 		Random rand = new Random();
 		int newX;
 		int newY;
@@ -141,40 +142,10 @@ public class GameState {
 			}
 			break;
 		}
-		Producer newProducer = new Producer(producers.get(index));
-		newProducer.x = newX;
-		newProducer.y = newY;
-		producers.set(index, newProducer);
-	}
-	
-	private void jumpConsumer(int index) {
-		Random rand = new Random();
-		int newX;
-		int newY;
-		tryagain:
-		while (true) {
-			newX = rand.nextInt(boardSize);
-			newY = rand.nextInt(boardSize);
-			for (int i = 0; i < numProducers; i++) {
-				if (newX == producers.get(i).x &&
-						newY == producers.get(i).y) {
-					continue tryagain;
-				}
-			}
-			for (int i = 0; i < numConsumers; i++) {
-				if (newX == consumers.get(i).x &&
-						newY == consumers.get(i).y) {
-					continue tryagain;
-				}
-			}
-			break;
-		}
-		Consumer newConsumer = new Consumer(consumers.get(index));
-		newConsumer.x = newX;
-		newConsumer.y = newY;
-		consumers.set(index, newConsumer);
-	}
-	
+        resources.get(index).x = newX;
+        resources.get(index).y = newY;
+    }
+
 	public void setPlayersAction(int playerID, Action a) {
 		allPlayers[playerID].action = a;
 	}
