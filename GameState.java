@@ -2,6 +2,7 @@ package games.ttd;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -30,16 +31,7 @@ public class GameState {
 		killStart = new ArrayList<Integer>();
 		producers = new ArrayList<Producer>();
 		consumers = new ArrayList<Consumer>();
-		
-		// Placeholder generation.
-		/*
-		for (int i = 0; i < numProducers; i++) {
-			producers.add(new Producer(boardSize/numProducers*i, 0, i, i+10));
-		}
-		for (int i = 0; i < numConsumers; i++) {
-			consumers.add(new Consumer(boardSize/numProducers*i, boardSize-1, i));
-		}
-		*/
+
 		nonbigotedGeneration(8, 0.05, 2, 0.05, 10, 15, 100);
 	}
 
@@ -57,13 +49,20 @@ public class GameState {
 		for (int i = 0; i < numConsumers; i++) {
             doJump(i, consumers);
 		}
-		// TODO: jump people in random order. (java.util.Collections.shuffle() a range of indices)
 		for (int iter = 0; iter < iterations; iter++) {
-			for (int i = 0; i < numProducers; i++) {
-                tryJump(i, neighbourhoodRadius, sameIntolerence, differentRequirement, nondifferentIntolerence, producers, consumers);
+            ArrayList<Integer> prodOrder = new ArrayList<Integer>();
+            ArrayList<Integer> consOrder = new ArrayList<Integer>();
+            for (int i = 0; i < Math.max(numProducers, numConsumers); i++) {
+                if (i < numProducers) prodOrder.add(i);
+                if (i < numConsumers) consOrder.add(i);
+            }
+            Collections.shuffle(prodOrder);
+            Collections.shuffle(consOrder);
+			for (int i = 0; i < prodOrder.size(); i++) {
+                tryJump(prodOrder.get(i), neighbourhoodRadius, sameIntolerence, differentRequirement, nondifferentIntolerence, producers, consumers);
 			}
-			for (int i = 0; i < numConsumers; i++) {
-                tryJump(i, neighbourhoodRadius, sameIntolerence, differentRequirement, nondifferentIntolerence, consumers, producers);
+			for (int i = 0; i < consOrder.size(); i++) {
+                tryJump(consOrder.get(i), neighbourhoodRadius, sameIntolerence, differentRequirement, nondifferentIntolerence, consumers, producers);
 			}
 		}
 	}
@@ -84,7 +83,6 @@ public class GameState {
         jumpChance += nondifferentIntolerence*Math.max(differentRequirement - numDifferent, 0);
         Random rand = new Random();
         if (rand.nextDouble() < jumpChance) {
-            // TODO work out what this line should be.
             doJump(index, mainType);
             return true;
         } else {
