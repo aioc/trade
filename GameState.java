@@ -59,10 +59,14 @@ public class GameState {
             Collections.shuffle(prodOrder);
             Collections.shuffle(consOrder);
 			for (int i = 0; i < prodOrder.size(); i++) {
-                tryJump(prodOrder.get(i), neighbourhoodRadius, sameIntolerence, differentRequirement, nondifferentIntolerence, producers, consumers);
+                tryJump(prodOrder.get(i), neighbourhoodRadius, sameIntolerence,
+                        differentRequirement, nondifferentIntolerence, producers,
+                        consumers);
 			}
 			for (int i = 0; i < consOrder.size(); i++) {
-                tryJump(consOrder.get(i), neighbourhoodRadius, sameIntolerence, differentRequirement, nondifferentIntolerence, consumers, producers);
+                tryJump(consOrder.get(i), neighbourhoodRadius, sameIntolerence,
+                        differentRequirement, nondifferentIntolerence, consumers,
+                        producers);
 			}
 		}
 	}
@@ -70,13 +74,15 @@ public class GameState {
     private boolean tryJump(int index, int neighbourhoodRadius, double sameIntolerence, int differentRequirement, double nondifferentIntolerence, List<? extends Resource> mainType, List<? extends Resource> auxType) {
         double jumpChance = 0.0;
         for (int i = 0; i < mainType.size(); i++) {
-            if (Math.abs(mainType.get(i).x - mainType.get(index).x) <= neighbourhoodRadius && Math.abs(mainType.get(i).y - mainType.get(index).y) <= neighbourhoodRadius) {
+            if (Math.abs(mainType.get(i).x - mainType.get(index).x) <= neighbourhoodRadius
+                    && Math.abs(mainType.get(i).y - mainType.get(index).y) <= neighbourhoodRadius) {
                 jumpChance += sameIntolerence;
             }
         }
         int numDifferent = 0;
         for (int i = 0; i < auxType.size(); i++) {
-            if (Math.abs(auxType.get(i).x - mainType.get(index).x) <= neighbourhoodRadius && Math.abs(auxType.get(i).y - mainType.get(index).y) <= neighbourhoodRadius) {
+            if (Math.abs(auxType.get(i).x - mainType.get(index).x) <= neighbourhoodRadius
+                    && Math.abs(auxType.get(i).y - mainType.get(index).y) <= neighbourhoodRadius) {
                 numDifferent += 1;
             }
         }
@@ -94,24 +100,23 @@ public class GameState {
 		Random rand = new Random();
 		int newX;
 		int newY;
-		tryagain:
-		while (true) {
+        boolean bad = false;
+	    do {
 			newX = rand.nextInt(boardSize);
 			newY = rand.nextInt(boardSize);
-			for (int i = 0; i < numProducers; i++) {
+			for (int i = 0; !bad && i < numProducers; i++) {
 				if (newX == producers.get(i).x &&
 						newY == producers.get(i).y) {
-					continue tryagain;
+                    bad = true;
 				}
 			}
-			for (int i = 0; i < numConsumers; i++) {
+			for (int i = 0; !bad && i < numConsumers; i++) {
 				if (newX == consumers.get(i).x &&
 						newY == consumers.get(i).y) {
-					continue tryagain;
+                    bad = true;
 				}
 			}
-			break;
-		}
+		} while (bad);
         resources.get(index).x = newX;
         resources.get(index).y = newY;
     }
