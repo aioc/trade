@@ -12,6 +12,8 @@ public class GameState {
     private int numConsumers;
 	private GamePerson[] allPlayers;
 	private List<Integer> killStart;
+	private List<Producer> producers;
+	private List<Consumer> consumers;
 	
 	private GameVisualiser visualReport;
 
@@ -24,6 +26,14 @@ public class GameState {
 		this.visualReport = reportTo;
 		allPlayers = new GamePerson[numPlayers];
 		killStart = new ArrayList<Integer>();
+		
+		// Testing generation.
+		for (int i = 0; i < numProducers; i++) {
+			producers.add(new Producer(boardSize/numProducers*i, 0, i, i+10));
+		}
+		for (int i = 0; i < numConsumers; i++) {
+			consumers.add(new Consumer(boardSize/numProducers*i, boardSize-1, i, i+10));
+		}
 	}
 
 	public void setPlayersAction(int playerID, Action a) {
@@ -42,6 +52,14 @@ public class GameState {
 		//}
 	}
 
+	public List<Producer> getProducers() {
+		return producers;
+	}
+	
+	public List<Consumer> getConsumers() {
+		return consumers;
+	}
+	
 	public int getBoardSize() {
 		return boardSize;
 	}
