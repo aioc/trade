@@ -93,7 +93,9 @@ public class GameRunner implements GameInstance {
                 for (int j = 0; j < players.size(); j++) {
                     GamePerson gp = state.getPerson(i);
                     connection.sendInfo("CASHMONEY " + i + " " + gp.money);
-                    if (gp.lastTurn != Turn.INVALID || gp.lastTurn != Turn.NOP)
+                    // TODO double-check that this doesn't try to send a stupid
+                    // move on zombie revival
+                    if (gp.money > 0 && gp.lastTurn != Turn.INVALID)
                         connection.sendInfo("INVEST " + i + " " + gp.lastTurn);
                 }
                 p.getConnection().sendInfo("YOURMOVE");

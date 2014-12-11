@@ -1,7 +1,7 @@
 package games.ttd;
 
 public enum Turn {
-	NOP(0, 0, 0),
+	//NOP(0, 0, 0),
 	UP(0, 0, -1),
 	RIGHT(1, 1, 0),
 	DOWN(2, 0, 1),
@@ -11,9 +11,10 @@ public enum Turn {
 	private int dir;
     private int x, y;
 	
-	private Turn(int dir, int dx, int dy) {
+	private Turn(int dir, int x, int y) {
 		this.dir = dir;
-        x = y = -1;
+        this.x = x;
+        this.y = y;
 	}
 
     public void setSquare(int x, int y) {
