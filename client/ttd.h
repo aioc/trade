@@ -22,10 +22,12 @@ extern "C" {
 #define DOWN                    2
 #define LEFT                    3
 
-	int dr[] = {-1, 0, 1, 0};
-	int dc[] = {0, 1, 0, -1};
-
-	/*   These directions are definied in such a way, that if you are at square
+	/*
+	 *   Use:
+	 *   int dr[] = {-1, 0, 1, 0};
+	 *   int dc[] = {0, 1, 0, -1};
+	 *   to deal with directions.
+	 *   These directions are definied in such a way, that if you are at square
 	 *   (r,c), the square in direction d from it has the coordinates
 	 *   (r + dr[d], c + dc[d]).
 	 */
@@ -58,7 +60,7 @@ extern "C" {
 	 *   This is called when your client connects to the server. You need to
 	 *   provide a name using setName and a colour with setColour.
 	 */
-	void clientRegister();
+	void clientRegister(void);
 
 	// ******** These two functions are only called at the start of the game ********
 
@@ -79,7 +81,7 @@ extern "C" {
 	 *
 	 *   You are not required to call anything in here.
 	 */
-	void clientEntityInfo(int numProducers, int numConsumers, producer_info *producers, consumer_info *consumers);
+	void clientEntityInfo(int numProducers, int numConsumers, struct producer_info *producers, struct consumer_info *consumers);
 
 	// ******** These two functions will be called *BEFORE* players take their turns for the round ********
 
@@ -115,7 +117,7 @@ extern "C" {
 	 *
 	 *   If you have <= 0 money, then this function will *not* be called.
 	 */
-	void clientDoTurn();
+	void clientDoTurn(void);
 
 
 	/////////////////////////////////////////////////////////////////////
