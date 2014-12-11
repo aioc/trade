@@ -1,11 +1,11 @@
 package games.ttd;
 
 public enum Turn {
-	//NOP(0, 0, 0),
 	UP(0, 0, -1),
 	RIGHT(1, 1, 0),
 	DOWN(2, 0, 1),
 	LEFT(3, -1, 0),
+	NOP(4, 0, 0),
 	INVALID(-1, -1, -1);
 	
 	private int dir;
