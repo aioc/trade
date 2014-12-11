@@ -1,7 +1,10 @@
 package games.ttd;
 
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util;
+import java.util.Random;
 
 public class GameState {
 
@@ -26,7 +29,9 @@ public class GameState {
 		this.visualReport = reportTo;
 		allPlayers = new GamePerson[numPlayers];
 		killStart = new ArrayList<Integer>();
-		
+		producers = new ArrayList<Producer>();
+		consumers = new ArrayList<Consumer>();
+		//java.util.Collections.shuffle();
 		// Testing generation.
 		for (int i = 0; i < numProducers; i++) {
 			producers.add(new Producer(boardSize/numProducers*i, 0, i, i+10));
@@ -36,6 +41,123 @@ public class GameState {
 		}
 	}
 
+	private void nonbigotedGeneration(int neighbourhoodRadius, double sameIntolerence, int differentRequirement, double nondifferentIntolerence, int iterations) {
+		// TODO: randomly place consumers and producers.
+		for (int iter = 0; iter < iterations; iter++) {
+			for (int i = 0; i < numProducers; i++) {
+				tryJumpProducer(i, neighbourhoodRadius, sameIntolerence, differentRequirement, nondifferentIntolerence);
+			}
+			for (int i = 0; i < numConsumers; i++) {
+				tryJumpConsumer(i, neighbourhoodRadius, sameIntolerence, differentRequirement, nondifferentIntolerence);
+			}
+		}
+	}
+	
+	private boolean tryJumpProducer(int index, int neighbourhoodRadius, double sameIntolerence, int differentRequirement, double nondifferentIntolerence) {
+		double jumpChance = 0.0;
+		for (int i = 0; i < numProducers; i++) {
+			if (Math.abs(producers.get(i).x - producers.get(index).x) <= neighbourhoodRadius && 
+					Math.abs(producers.get(i).y - producers.get(index).y) <= neighbourhoodRadius) {
+				jumpChance += sameIntolerence;
+			}
+		}
+		int numDifferent = 0;
+		for (int i = 0; i < numConsumers; i++) {
+			if (Math.abs(consumers.get(i).x - producers.get(index).x) <= neighbourhoodRadius && 
+					Math.abs(consumers.get(i).y - producers.get(index).y) <= neighbourhoodRadius) {
+				numDifferent += 1;
+				
+			}
+		}
+		jumpChance += nondifferentIntolerence*Math.max(differentRequirement - numDifferent, 0);
+		Random rand = new Random();
+		if (rand.nextDouble() < jumpChance) {
+			jumpProducer(index);
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	private boolean tryJumpConsumer(int index, int neighbourhoodRadius, double sameIntolerence, int differentRequirement, double nondifferentIntolerence) {
+		double jumpChance = 0.0;
+		for (int i = 0; i < numConsumers; i++) {
+			if (Math.abs(consumers.get(i).x - consumers.get(index).x) <= neighbourhoodRadius && 
+					Math.abs(consumers.get(i).y - consumers.get(index).y) <= neighbourhoodRadius) {
+				jumpChance += sameIntolerence;
+			}
+		}
+		int numDifferent = 0;
+		for (int i = 0; i < numProducers; i++) {
+			if (Math.abs(producers.get(i).x - consumers.get(index).x) <= neighbourhoodRadius && 
+					Math.abs(producers.get(i).y - consumers.get(index).y) <= neighbourhoodRadius) {
+				numDifferent += 1;
+			}
+		}
+		jumpChance += nondifferentIntolerence*Math.max(differentRequirement - numDifferent, 0);
+		Random rand = new Random();
+		if (rand.nextDouble() < jumpChance) {
+			jumpConsumer(index);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private void jumpProducer(int index) {
+		Random rand = new Random();
+		int newX;
+		int newY;
+		tryagain:
+		while (true) {
+			newX = rand.nextInt(boardSize);
+			newY = rand.nextInt(boardSize);
+			for (int i = 0; i < numProducers; i++) {
+				if (newX == producers.get(i).x &&
+						newY == producers.get(i).y) {
+					continue tryagain;
+				}
+			}
+			for (int i = 0; i < numConsumers; i++) {
+				if (newX == consumers.get(i).x &&
+						newY == consumers.get(i).y) {
+					continue tryagain;
+				}
+			}
+		}
+		Producer newProducer = new Producer(producers.get(index));
+		newProducer.x = newX;
+		newProducer.y = newY;
+		producers.set(index, newProducer);
+	}
+	
+	private void jumpConsumer(int index) {
+		Random rand = new Random();
+		int newX;
+		int newY;
+		tryagain:
+		while (true) {
+			newX = rand.nextInt(boardSize);
+			newY = rand.nextInt(boardSize);
+			for (int i = 0; i < numProducers; i++) {
+				if (newX == producers.get(i).x &&
+						newY == producers.get(i).y) {
+					continue tryagain;
+				}
+			}
+			for (int i = 0; i < numConsumers; i++) {
+				if (newX == consumers.get(i).x &&
+						newY == consumers.get(i).y) {
+					continue tryagain;
+				}
+			}
+		}
+		Consumer newConsumer = new Consumer(consumers.get(index));
+		newConsumer.x = newX;
+		newConsumer.y = newY;
+		consumers.set(index, newConsumer);
+	}
+	
 	public void setPlayersAction(int playerID, Action a) {
 		allPlayers[playerID].action = a;
 	}
