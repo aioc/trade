@@ -2,7 +2,7 @@ package games.ttd;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,7 +117,7 @@ public class GameRunner implements GameInstance {
                 }
                 if (playerDied) {
                     state.killPlayer(i);
-                    killPlayers(i);
+                    killPlayers(Arrays.asList(i));
                 }
             }
             state.implementMoves();
@@ -128,7 +128,7 @@ public class GameRunner implements GameInstance {
         for (int i = 0; i < players.size(); i++) {
             players.get(i).getConnection().sendInfo("GAMEOVER " + finalRanks[i]);
             if (finalRanks[i] == 1) {
-                state.setWinner(i);
+                //state.setWinner(i);
             }
         }
         while (visualiser.stillHasStatesQueued() && visualiser.hasVisualised()) {
