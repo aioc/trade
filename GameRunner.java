@@ -76,11 +76,10 @@ public class GameRunner implements GameInstance {
         for (int i = 0; i < players.size(); i++) {
             PersistentPlayer p = players.get(i);
             ClientConnection connection = p.getConnection();
-            if (!connection.isConnected()) continue;
             for (int j = 0; j < prods.size(); j++)
-                p.getConnection().sendInfo("PROD " + prods.get(i));
+                connection.sendInfo("PROD " + prods.get(i));
             for (int j = 0; j < cons.size(); j++)
-                p.getConnection().sendInfo("CONS " + cons.get(i));
+                connection.sendInfo("CONS " + cons.get(i));
         }
         
 		while (results.size() < players.size() - 1 /* && moves_exist() */) {
@@ -92,6 +91,10 @@ public class GameRunner implements GameInstance {
 				ClientConnection connection = p.getConnection();
                 // First, send the state to everyone
 				for (int j = 0; j < players.size(); j++) {
+                    GamePerson gp = state.getPerson(i);
+                    connection.sendInfo("CASHMONEY " + i + " " + gp.money);
+                    if (gp.lastTurn != Turn.INVALID || gp.lastTurn != Turn.NOP)
+                        connection.sendInfo("INVEST " + i + " " + gp.lastTurn);
 				}
 				p.getConnection().sendInfo("YOURMOVE");
 				boolean playerDied = false;
