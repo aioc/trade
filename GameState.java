@@ -40,7 +40,7 @@ public class GameState {
 		killStart = new ArrayList<Integer>();
 		producers = new ArrayList<Producer>();
 		consumers = new ArrayList<Consumer>();
-
+		
 		nonbigotedGeneration(8, 0.05, 2, 0.05, 10, 15, 100);
 		char[][] map = new char[boardSize][boardSize];
 		for (int c = 0; c < boardSize; c++) {
@@ -81,10 +81,10 @@ public class GameState {
 			consumers.add(new Consumer(0, 0, rand.nextInt(numTypes)));
 		}
 		for (int i = 0; i < numProducers; i++) {
-            doJump(i, changeToResourceList(producers));
+            producers.set(i, (Producer)doJump(producers.get(i)));
 		}
 		for (int i = 0; i < numConsumers; i++) {
-            doJump(i, changeToResourceList(consumers));
+            consumers.set(i, (Consumer)doJump(consumers.get(i)));
 		}
 		for (int iter = 0; iter < iterations; iter++) {
             ArrayList<Integer> prodOrder = new ArrayList<Integer>();
@@ -96,19 +96,19 @@ public class GameState {
             Collections.shuffle(prodOrder);
             Collections.shuffle(consOrder);
 			for (int i = 0; i < prodOrder.size(); i++) {
-                tryJump(prodOrder.get(i), neighbourhoodRadius, sameIntolerence,
+                producers.set(i, (Producer)tryJump(prodOrder.get(i), neighbourhoodRadius, sameIntolerence,
                         differentRequirement, nondifferentIntolerence, changeToResourceList(producers),
-                        changeToResourceList(consumers));
+                        changeToResourceList(consumers)));
 			}
 			for (int i = 0; i < consOrder.size(); i++) {
-                tryJump(consOrder.get(i), neighbourhoodRadius, sameIntolerence,
+                consumers.set(i, (Consumer)tryJump(consOrder.get(i), neighbourhoodRadius, sameIntolerence,
                         differentRequirement, nondifferentIntolerence, changeToResourceList(consumers),
-                        changeToResourceList(producers));
+                        changeToResourceList(producers)));
 			}
 		}
 	}
 
-    private boolean tryJump(int index, int neighbourhoodRadius, double sameIntolerence, int differentRequirement, double nondifferentIntolerence, List<Resource> mainType, List<Resource> auxType) {
+    private Resource tryJump(int index, int neighbourhoodRadius, double sameIntolerence, int differentRequirement, double nondifferentIntolerence, List<Resource> mainType, List<Resource> auxType) {
         double jumpChance = 0.0;
         for (int i = 0; i < mainType.size(); i++) {
             if (Math.abs(mainType.get(i).r - mainType.get(index).r) <= neighbourhoodRadius
@@ -126,14 +126,13 @@ public class GameState {
         jumpChance += nondifferentIntolerence*Math.max(differentRequirement - numDifferent, 0);
         Random rand = new Random();
         if (rand.nextDouble() < jumpChance) {
-            doJump(index, mainType);
-            return true;
+            return doJump(mainType.get(index));
         } else {
-            return false;
+            return mainType.get(index);
         }
     }
 	
-    private void doJump(int index, List<Resource> resources) {
+    private Resource doJump(Resource resource) {
 		Random rand = new Random();
 		int newR;
 		int newC;
@@ -155,18 +154,19 @@ public class GameState {
 				}
 			}
 		} while (bad);
-        if (resources.get(index) instanceof Producer) {
-            Producer newProducer = new Producer((Producer)resources.get(index));
+        if (resource instanceof Producer) {
+            Producer newProducer = new Producer((Producer)resource);
             newProducer.r = newR;
             newProducer.c = newC;
-            resources.set(index, newProducer);
-        } else if (resources.get(index) instanceof Consumer) {
-            Consumer newConsumer = new Consumer((Consumer)resources.get(index));
+            return (Resource)newProducer;
+        } else if (resource instanceof Consumer) {
+            Consumer newConsumer = new Consumer((Consumer)resource);
             newConsumer.r = newR;
             newConsumer.c = newC;
-            resources.set(index, newConsumer);
+            return (Resource)newConsumer;
         } else {
             assert 1 == 0;
+            return null;
         }
         //resources.get(index).r = newR;
         //resources.get(index).c = newC;
