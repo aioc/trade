@@ -10,19 +10,11 @@ import core.server.DisconnectedException;
 
 public class GameFactory implements GameBuilder {
 
-    private int boardSize;
-    private int numTypes;
-    private int numProducers;
-    private int numConsumers;
-    private int initialMoney;
-    
-    public GameFactory(int n, int c, int p, int cc, int m) {
-        boardSize = n;
-        numTypes = c;
-        numProducers = p;
-        numConsumers = cc;
-        initialMoney = m;
-    }
+    public int boardSize = 10;
+    public int numTypes = 5;
+    public int numProducers = 15;
+    public int numConsumers = 45;
+    public int initialMoney = 20;
 
 	@Override
 	public GameInstance createGameInstance(List<PersistentPlayer> players) {
