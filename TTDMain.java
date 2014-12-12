@@ -14,7 +14,8 @@ public class TTDMain {
         int numTypes = 5;
         int numProducers = 15;
         int numConsumers = 45;
-        new Director(new PlayerFactory(), new GameFactory(boardSize, numTypes, numProducers, numConsumers)).run(config);
+        int initialMoney = 20;
+        new Director(new PlayerFactory(), new GameFactory(boardSize, numTypes, numProducers, numConsumers, initialMoney)).run(config);
 	}
 
 }

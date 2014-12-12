@@ -14,12 +14,14 @@ public class GameFactory implements GameBuilder {
     private int numTypes;
     private int numProducers;
     private int numConsumers;
+    private int initialMoney;
     
-    public GameFactory(int n, int c, int p, int cc) {
+    public GameFactory(int n, int c, int p, int cc, int m) {
         boardSize = n;
         numTypes = c;
         numProducers = p;
         numConsumers = cc;
+        initialMoney = m;
     }
 
 	@Override
@@ -35,7 +37,7 @@ public class GameFactory implements GameBuilder {
         }
 		for (int i = 0; i < players.size(); i++) {
 			PersistentPlayer p = players.get(i);
-			String toSend = "NEWGAME " + players.size() + " " + i + " " + boardSize + " " + numTypes + " " + numProducers + " " + numConsumers;
+			String toSend = "NEWGAME " + players.size() + " " + boardSize + " " + numTypes + " " + numProducers + " " + numConsumers + " " + initialMoney + " " + i;
 			p.getConnection().sendInfo(toSend);
 
 			try {
