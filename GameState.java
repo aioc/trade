@@ -42,6 +42,25 @@ public class GameState {
 		consumers = new ArrayList<Consumer>();
 
 		nonbigotedGeneration(8, 0.05, 2, 0.05, 10, 15, 100);
+		char[][] map = new char[boardSize][boardSize];
+		for (int x = 0; x < boardSize; x++) {
+			for (int y = 0; y < boardSize; y++) {
+				map[x][y] = '.';
+			}
+		}
+		for (int i = 0; i < numProducers; i++) {
+			map[producers.get(i).x][producers.get(i).y] = 'P';
+		}
+		for (int i = 0; i < numConsumers; i++) {
+			map[consumers.get(i).x][consumers.get(i).y] = 'C';
+		}
+
+		for (int y = 0; y < boardSize; y++) {
+			for (int x = 0; x < boardSize; x++) {
+				System.out.print(map[x][y]);
+			}
+			System.out.println();
+		}
 	}
 
 	private void nonbigotedGeneration(int neighbourhoodRadius, double sameIntolerence, int differentRequirement, double nondifferentIntolerence, int minPayoff, int maxPayoff, int iterations) {
