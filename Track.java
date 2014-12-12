@@ -23,6 +23,17 @@ public class Track {
         this.dc = dc[dir];
     }
 
+    public int toDir() {
+        final int[] dr = {-1, 0, 1, 0};
+        final int[] dc = {0, 1, 0, -1};
+        for (int i = 0; i < 4; i++) {
+            if (dr[i] == this.dr && dc[i] == this.dc)
+                return i;
+        }
+        assert false;
+        return -1;
+    }
+
     public String toString() {
         return r + " " + c + " " + placedTime + " " + dr + " "  + dc;
     }

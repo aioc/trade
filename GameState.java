@@ -4,6 +4,8 @@ package games.ttd;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Random;
 
 public class GameState {
@@ -19,6 +21,8 @@ public class GameState {
 	private List<Integer> killStart;
 	private List<Producer> producers;
 	private List<Consumer> consumers;
+
+    private int board[][][][];
 	
 	private GameVisualiser visualReport;
 
@@ -36,6 +40,7 @@ public class GameState {
                 paidOut[i][j] = false;
             }
         }
+        board = new int[boardSize][boardSize][4][numPlayers];
 		allPlayers = new GamePerson[numPlayers];
 		for (int i = 0; i < numPlayers; i++) {
 			allPlayers[i] = new GamePerson(startMoney);
@@ -179,7 +184,77 @@ public class GameState {
 		allPlayers[playerID].action = a;
 	}
 
+    private Integer manhattanDist(Pair<Integer, Integer> a, Pair<Integer, Integer> b) {
+        return Math.abs(a.getL() - b.getL()) + Math.abs(a.getR() - b.getR());
+    }
+
+    private Pair<Integer, List<Integer>> bfs(int producer, int player) {
+        Queue<Pair<Pair<Integer, List<Integer>>, Pair<Integer, Integer>>> q = new LinkedList<Pair<Pair<Integer, List<Integer>>, Pair<Integer, Integer>>>();
+        Pair<Integer, Integer> producerPoint = new Pair<Integer, Integer>(producers.get(producer).r, producers.get(producer).c);
+        q.add(new Pair<Pair<Integer, List<Integer>>, Pair<Integer, Integer>>(new Pair<Integer, List<Integer>>(0, new LinkedList<Integer>()), producerPoint));
+        Integer minDist = Integer.MAX_VALUE;
+        boolean seen[][] = new boolean[boardSize][boardSize];
+        List<Pair<Pair<Integer, List<Integer>>, Integer>> closeConsumers = new ArrayList<Pair<Pair<Integer, List<Integer>>, Integer>>();
+        while (q.size() > 0) {
+            Pair<Pair<Integer, List<Integer>>, Pair<Integer, Integer>> current = q.remove();
+            if (manhattanDist(current.getR(), producerPoint) > minDist) continue;
+            Pair<Integer, Integer> point = current.getR();
+            for (int i = 0; i < consumers.size(); i++) {
+                if (consumers.get(i).r == point.getL() && consumers.get(i).c == point.getR()) {
+                    minDist = Math.min(manhattanDist(producerPoint, point), minDist);
+                    closeConsumers.add(new Pair<Pair<Integer, List<Integer>>, Integer>(current.getL(), i));
+                    break;
+                }
+            }
+
+            seen[point.getL()][point.getR()] = true;
+
+            final int dr[] = {-1, 0, 1, 0};
+            final int dc[] = {0, -1, 0, 1};
+            for (int k = 0; k < 4; k++) {
+                if (board[point.getL()][point.getR()][k][player] > 0) {
+                    int newR = point.getL() + dr[k];
+                    int newC = point.getR() + dc[k];
+                    int numTracks = 0;
+                    int minTime = Integer.MAX_VALUE;
+                    List<Integer> owners = new LinkedList<Integer>();
+                    for (int i = 0; i < numPlayers; i++) {
+                        if (board[point.getL()][point.getR()][k][i] > 0 && board[point.getL()][point.getR()][k][i] != tick
+                                && board[point.getL()][point.getR()][k][i] <= minTime) {
+                            if (board[point.getL()][point.getR()][k][i] == minTime) {
+                                numTracks++;
+                                owners.add(i);
+                            } else {
+                                minTime = board[point.getL()][point.getR()][k][i];
+                                owners.clear();
+                                owners.add(i);
+                                numTracks = 1;
+                            }
+                        }
+                    }
+                    if (newC >= 0 && newC < boardSize && newR >= 0 && newR < boardSize && !seen[newR][newC]) {
+                        List<Integer> newOwners = current.getL().getR();
+                        newOwners.addAll(owners);
+                        q.add(new Pair<Pair<Integer, List<Integer>>, Pair<Integer, Integer>>(new Pair<Integer, List<Integer>>(current.getL().getL() + numTracks, newOwners), new Pair<Integer, Integer>(newR, newC)));
+                    }
+                }
+            }
+        }
+        Pair<Integer, List<Integer>> ret = new Pair<Integer, List<Integer>>(Integer.MAX_VALUE, new ArrayList<Integer>());
+        for (int i = 0; i < closeConsumers.size();) {
+            Pair<Integer, Integer> consumerPoint = new Pair<Integer, Integer>(consumers.get(closeConsumers.get(i).getR()).r, consumers.get(closeConsumers.get(i).getR()).c);
+            if (manhattanDist(producerPoint, consumerPoint) > minDist) closeConsumers.remove(i);
+            else {
+                if (closeConsumers.get(i).getL().getL() < ret.getL())
+                    ret = closeConsumers.get(i).getL();
+                i++;
+            }
+        }
+        return ret;
+    }
+
 	public void implementMoves() {
+        this.tick++;
         // TODO implementMoves()
         List<GameEvent> events = new ArrayList<GameEvent>();
         // First of all, apply all moves.
@@ -188,16 +263,36 @@ public class GameState {
             Track newTrack = newP.tracks.get(newP.tracks.size() - 1);
             int newR = newTrack.c + newTrack.dr;
             int newC = newTrack.r + newTrack.dc;
-            if (newR < 0 || newR >= boardSize || newC < 0 || newC >= boardSize) {
+            boolean goodTrack = true;
+            if (newR < 0 || newR >= boardSize || newC < 0 || newC >= boardSize || board[newTrack.r][newTrack.c][newTrack.toDir()][i] != 0) {
                 newP = allPlayers[i];
                 allPlayers[i].lastTurn = Turn.NOP;
+                goodTrack = false;
             }
+            if (goodTrack) {
+                board[newTrack.r][newTrack.c][newTrack.toDir()][i] = tick;
+                newP.money--;
+            }
+
             allPlayers[i] = newP;
         }
         for (int i = 0; i < numProducers; i++) {
             for (int j = 0; j < numPlayers; j++) {
                 if (paidOut[i][j]) continue;
                 // TODO check if this producer should pay out.
+                // check if there's a path from producer i using player j's
+                // tracks
+                Pair<Integer, List<Integer>> path = bfs(i, j);
+                if (path.getL() >= 0) {
+                    // payout P - path
+                    allPlayers[i].money = producers.get(i).payoff * (Math.abs(producers.get(i).r - consumers.get(path.getL()).r)
+                                                                        + Math.abs(producers.get(i).c - consumers.get(path.getL()).c))
+                                             - path.getR().size();
+                    for (int k = 0; k < path.getR().size(); k++) {
+                        allPlayers[path.getR().get(k)].money++;
+                    }
+                    paidOut[i][j] = true;
+                }
             }
         }
 		visualReport.addStateToVisualise(allPlayers, events);
@@ -205,7 +300,6 @@ public class GameState {
 			allPlayers[i].preAction = allPlayers[i].action;
 			allPlayers[i].action = Action.noAction();
 		}
-        this.tick++;
 	}
 
 	public List<Producer> getProducers() {
