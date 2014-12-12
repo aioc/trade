@@ -64,6 +64,14 @@ public class GameState {
 		}
 	}
 
+    private List<Resource> changeToResourceList(List<? extends Resource> l) {
+        ArrayList<Resource> ret = new ArrayList<Resource>();
+        for (int i = 0; i < l.size(); i++) {
+            ret.add((Resource)l.get(i));
+        }
+        return ret;
+    }
+
 	private void nonbigotedGeneration(int neighbourhoodRadius, double sameIntolerence, int differentRequirement, double nondifferentIntolerence, int minPayoff, int maxPayoff, int iterations) {
 		Random rand = new Random();
 		for (int i = 0; i < numProducers; i++) {
@@ -73,10 +81,10 @@ public class GameState {
 			consumers.add(new Consumer(0, 0, rand.nextInt(numTypes)));
 		}
 		for (int i = 0; i < numProducers; i++) {
-            doJump(i, producers);
+            doJump(i, changeToResourceList(producers));
 		}
 		for (int i = 0; i < numConsumers; i++) {
-            doJump(i, consumers);
+            doJump(i, changeToResourceList(consumers));
 		}
 		for (int iter = 0; iter < iterations; iter++) {
             ArrayList<Integer> prodOrder = new ArrayList<Integer>();
@@ -89,18 +97,18 @@ public class GameState {
             Collections.shuffle(consOrder);
 			for (int i = 0; i < prodOrder.size(); i++) {
                 tryJump(prodOrder.get(i), neighbourhoodRadius, sameIntolerence,
-                        differentRequirement, nondifferentIntolerence, producers,
-                        consumers);
+                        differentRequirement, nondifferentIntolerence, changeToResourceList(producers),
+                        changeToResourceList(consumers));
 			}
 			for (int i = 0; i < consOrder.size(); i++) {
                 tryJump(consOrder.get(i), neighbourhoodRadius, sameIntolerence,
-                        differentRequirement, nondifferentIntolerence, consumers,
-                        producers);
+                        differentRequirement, nondifferentIntolerence, changeToResourceList(consumers),
+                        changeToResourceList(producers));
 			}
 		}
 	}
 
-    private boolean tryJump(int index, int neighbourhoodRadius, double sameIntolerence, int differentRequirement, double nondifferentIntolerence, List<? extends Resource> mainType, List<? extends Resource> auxType) {
+    private boolean tryJump(int index, int neighbourhoodRadius, double sameIntolerence, int differentRequirement, double nondifferentIntolerence, List<Resource> mainType, List<Resource> auxType) {
         double jumpChance = 0.0;
         for (int i = 0; i < mainType.size(); i++) {
             if (Math.abs(mainType.get(i).r - mainType.get(index).r) <= neighbourhoodRadius
@@ -125,7 +133,7 @@ public class GameState {
         }
     }
 	
-    private void doJump(int index, List<? extends Resource> resources) {
+    private void doJump(int index, List<Resource> resources) {
 		Random rand = new Random();
 		int newR;
 		int newC;
@@ -147,8 +155,21 @@ public class GameState {
 				}
 			}
 		} while (bad);
-        resources.get(index).r = newR;
-        resources.get(index).c = newC;
+        if (resources.get(index) instanceof Producer) {
+            Producer newProducer = new Producer((Producer)resources.get(index));
+            newProducer.r = newR;
+            newProducer.c = newC;
+            resources.set(index, newProducer);
+        } else if (resources.get(index) instanceof Consumer) {
+            Consumer newConsumer = new Consumer((Consumer)resources.get(index));
+            newConsumer.r = newR;
+            newConsumer.c = newC;
+            resources.set(index, newConsumer);
+        } else {
+            assert 1 == 0;
+        }
+        //resources.get(index).r = newR;
+        //resources.get(index).c = newC;
     }
 
 	public void setPlayersAction(int playerID, Action a) {
