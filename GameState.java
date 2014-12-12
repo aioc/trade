@@ -271,6 +271,7 @@ public class GameState {
             }
             if (goodTrack) {
                 board[newTrack.r][newTrack.c][newTrack.toDir()][i] = tick;
+                board[newR][newC][(newTrack.toDir() + 2) % 4][i] = tick;
                 newP.money--;
             }
 
