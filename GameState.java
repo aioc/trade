@@ -43,21 +43,22 @@ public class GameState {
 
 		nonbigotedGeneration(8, 0.05, 2, 0.05, 10, 15, 100);
 		char[][] map = new char[boardSize][boardSize];
-		for (int x = 0; x < boardSize; x++) {
-			for (int y = 0; y < boardSize; y++) {
-				map[x][y] = '.';
+		for (int c = 0; c < boardSize; c++) {
+			for (int r = 0; r < boardSize; r++) {
+				map[c][r] = '.';
 			}
 		}
 		for (int i = 0; i < numProducers; i++) {
-			map[producers.get(i).x][producers.get(i).y] = 'P';
+			map[producers.get(i).c][producers.get(i).r] = 'P';
+			System.out.println(producers.get(i).c);
 		}
 		for (int i = 0; i < numConsumers; i++) {
-			map[consumers.get(i).x][consumers.get(i).y] = 'C';
+			map[consumers.get(i).c][consumers.get(i).r] = 'C';
 		}
 
-		for (int y = 0; y < boardSize; y++) {
-			for (int x = 0; x < boardSize; x++) {
-				System.out.print(map[x][y]);
+		for (int r = 0; r < boardSize; r++) {
+			for (int c = 0; c < boardSize; c++) {
+				System.out.print(map[c][r]);
 			}
 			System.out.println();
 		}
@@ -130,6 +131,7 @@ public class GameState {
 		int newC;
         boolean bad = false;
 	    do {
+	    	bad = false;
 			newR = rand.nextInt(boardSize);
 			newC = rand.nextInt(boardSize);
 			for (int i = 0; !bad && i < numProducers; i++) {
