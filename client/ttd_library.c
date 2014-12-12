@@ -163,17 +163,15 @@ static int handleNewGame(char *args) {
 	int num_players, board_size, num_types;
 	int starting_money;
 	int pid;
-
-	int the_key;
 	// Big sscanf
-	if (sscanf(args, "%d %d %d %d %d %d %d %d", &num_players, &board_size, &num_types, &num_producers, &num_consumers, &starting_money, &pid, &the_key) != 8) {
+	if (sscanf(args, "%d %d %d %d %d %d %d", &num_players, &board_size, &num_types, &num_producers, &num_consumers, &starting_money, &pid) != 7) {
 		internalError("Bad arguments on NEWGAME: %s\n", args);
 	}
 	alarm(1);
 	clientInit(num_players, board_size, num_types, starting_money, pid);
 	alarm(0);
 	seen_producers = seen_consumers = 0;
-	if (sendPrintf("READY %d\n", the_key)) {
+	if (sendPrintf("READY\n")) {
 		return -1;
 	}
 	possiblyGiveEntityInfo();
