@@ -52,7 +52,9 @@ public enum Turn {
         assert r != -1;
         assert c != -1;
 		GamePerson gp = new GamePerson(p);
-        gp.tracks.add(new Track(r, c, time, dir));
+		if (dir != NOP.dir && dir != INVALID.dir) { 
+			gp.tracks.add(new Track(r, c, time, dir));
+		}
 		return gp;
 	}
 

@@ -29,6 +29,10 @@ public class GamePerson {
         action = p.action;
         preAction = p.preAction;
         lastTurn = p.lastTurn;
+        tracks = new ArrayList<Track>();
+        for (Track t : p.tracks) {
+        	tracks.add(t);
+        }
         stats = new Statistics(p.stats);
     }
 

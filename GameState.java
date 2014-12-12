@@ -22,7 +22,7 @@ public class GameState {
 	
 	private GameVisualiser visualReport;
 
-	public GameState(int numPlayers, int boardSize, int numTypes, int numProducers, int numConsumers, GameVisualiser reportTo) {
+	public GameState(int numPlayers, int boardSize, int numTypes, int numProducers, int numConsumers, int startMoney, GameVisualiser reportTo) {
         this.tick = 0;
 		this.numPlayers = numPlayers;
 		this.boardSize = boardSize;
@@ -37,6 +37,9 @@ public class GameState {
             }
         }
 		allPlayers = new GamePerson[numPlayers];
+		for (int i = 0; i < numPlayers; i++) {
+			allPlayers[i] = new GamePerson(startMoney);
+		}
 		killStart = new ArrayList<Integer>();
 		producers = new ArrayList<Producer>();
 		consumers = new ArrayList<Consumer>();

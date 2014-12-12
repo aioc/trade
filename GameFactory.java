@@ -46,7 +46,7 @@ public class GameFactory implements GameBuilder {
 				p.getConnection().disconnect();
 			}
 		}
-		return new GameRunner(players, boardSize, numTypes, numProducers, numConsumers);
+		return new GameRunner(players, boardSize, numTypes, numProducers, numConsumers, initialMoney);
 
     }
 }

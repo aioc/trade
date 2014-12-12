@@ -21,38 +21,13 @@ public class GameRunner implements GameInstance {
 
     private int[] finalRanks;
 
-    public GameRunner(List<PersistentPlayer> players, int boardSize, int numTypes, int numProducers, int numConsumers) {
-        /*
-         * BEGIN HACKING CODE
-         */
-        //for (int i = 0; i < players.size(); i++) {
-        //	if (players.get(i).getConnection() instanceof MINARWIN) {
-        //		// We want to push it to the end
-        //		PersistentPlayer p = players.get(i);
-        //		players.remove(i);
-        //		players.add(p);
-        //		break;
-        //	}
-        //}
-        /*
-         * END HACKING CODE
-         */
+    public GameRunner(List<PersistentPlayer> players, int boardSize, int numTypes, int numProducers, int numConsumers, int startingMoney) {
         this.players = players;
 
         results = new HashMap<PersistentPlayer, Integer>();
         finalRanks = new int[players.size()];
         visualiser = new GameVisualiser(players, boardSize);
-        state = new GameState(players.size(), boardSize, numTypes, numProducers, numConsumers, visualiser);
-        /*
-         * BEGIN HACKING CODE
-         */
-        //if (players.get(players.size() - 1).getConnection() instanceof MINARWIN) {
-        //	// Send it our state
-        //	((MINARWIN) players.get(players.size() - 1).getConnection()).giveMeAllYourStates(state, players);
-        //}
-        /*
-         * END HACKING CODE
-         */
+        state = new GameState(players.size(), boardSize, numTypes, numProducers, numConsumers, startingMoney, visualiser);
     }
 
     private boolean isFinished(int playerIndex) {
@@ -91,12 +66,12 @@ public class GameRunner implements GameInstance {
                 ClientConnection connection = p.getConnection();
                 // First, send the state to everyone
                 for (int j = 0; j < players.size(); j++) {
-                    GamePerson gp = state.getPerson(i);
-                    connection.sendInfo("CASHMONEY " + i + " " + gp.money);
+                    GamePerson gp = state.getPerson(j);
+                    connection.sendInfo("CASHMONEY " + j + " " + gp.money);
                     // TODO double-check that this doesn't try to send a stupid
                     // move on zombie revival
-                    if (gp.money > 0 && (gp.lastTurn != Turn.INVALID || gp.lastTurn != Turn.NOP))
-                        connection.sendInfo("INVEST " + i + " " + gp.lastTurn);
+                    if (gp.money > 0 && !(gp.lastTurn == Turn.INVALID || gp.lastTurn == Turn.NOP))
+                        connection.sendInfo("INVEST " + j + " " + gp.lastTurn);
                 }
                 p.getConnection().sendInfo("YOURMOVE");
                 boolean playerDied = false;
