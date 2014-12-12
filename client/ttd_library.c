@@ -57,7 +57,7 @@ static void ensureState(int s, const char* fn) {
 
 static int validChr(char c) {
 	if ('0' <= c && c <= '9') return TRUE;
-	if ('A' <= c && c <= 'A') return TRUE;
+	if ('A' <= c && c <= 'Z') return TRUE;
 	if ('a' <= c && c <= 'z') return TRUE;
 	if (c == '_' || c == '-' || c == '.') return TRUE;
 	return FALSE;
@@ -293,7 +293,7 @@ static int getLine(char *buf, int max_read) {
 		if (read(sock, &buf[i], 1) <= 0) {
 			return -1;
 		}
-		if (buf[i] == '\n' || buf[i] == '\r') break;
+		if (buf[i] == '\n') break;
 	}
 	buf[i] = '\0';
 	if (echo_mode) {
