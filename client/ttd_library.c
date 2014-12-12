@@ -155,8 +155,8 @@ static int handleError(char *args) {
 static int num_producers, num_consumers;
 
 static int seen_producers, seen_consumers;
-static struct producer_info producers[MAX_BOARD_SIZE * MAX_BOARD_SIZE];
-static struct consumer_info consumers[MAX_BOARD_SIZE * MAX_BOARD_SIZE];
+static struct producer_info producers[MAX_PRODUCERS];
+static struct consumer_info consumers[MAX_CONSUMERS];
 
 static void possiblyGiveEntityInfo(void) {
 	if (seen_producers == num_producers && seen_consumers == num_consumers) {

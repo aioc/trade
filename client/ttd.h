@@ -12,16 +12,18 @@ extern "C" {
 
 	// Limits of certain restrictions
 #define MAX_NUM_PLAYERS         16
-#define MAX_BOARD_SIZE          32
+#define MAX_BOARD_SIZE          128
 #define MAX_RESOURCE_TYPES      8
 #define MAX_NAME_LENGTH         16
+#define MAX_PRODUCERS			1024
+#define MAX_CONSUMERS			1024
 
 	// Directions
 #define UP                      0
 #define RIGHT                   1
 #define DOWN                    2
 #define LEFT                    3
-
+#define NUM_DIRECTIONS			4
 	/*
 	 *   Use:
 	 *   int dr[] = {-1, 0, 1, 0};
