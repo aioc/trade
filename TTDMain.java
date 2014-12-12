@@ -2,6 +2,7 @@ package games.ttd;
 
 import core.Config;
 import core.Director;
+import core.commander.EmptyGameCommandHandler;
 
 public class TTDMain {
 
@@ -15,7 +16,7 @@ public class TTDMain {
         int numProducers = 15;
         int numConsumers = 45;
         int initialMoney = 20;
-        new Director(new PlayerFactory(), new GameFactory(boardSize, numTypes, numProducers, numConsumers, initialMoney)).run(config);
+        new Director(new PlayerFactory(), new GameFactory(boardSize, numTypes, numProducers, numConsumers, initialMoney), new EmptyGameCommandHandler()).run(config);
 	}
 
 }
