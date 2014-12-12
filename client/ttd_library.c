@@ -18,6 +18,7 @@
 #define STATE_REGISTER			1
 #define STATE_MAKEMOVE			2
 
+static int echo_mode;
 static int sock;
 static int state;
 
@@ -35,9 +36,14 @@ static int sendPrintf(const char *fmt, ...) {
 	va_end(ap);
 
 	int buflen = strlen(buf);
-
 	if (write(sock, buf, buflen) != buflen) {
 		return -1;
+	}
+	if (echo_mode) {
+		buf[buflen - 1] = '\0';
+		fprintf(stderr, "\x1b[1;35m> \"");
+		fprintf(stderr, "%s", buf);
+		fprintf(stderr, "\"\x1b[0m\n");
 	}
 	return 0; 
 }
@@ -290,6 +296,11 @@ static int getLine(char *buf, int max_read) {
 		if (buf[i] == '\n' || buf[i] == '\r') break;
 	}
 	buf[i] = '\0';
+	if (echo_mode) {
+		fprintf(stderr, "\x1b[1;32m< \"");
+		fprintf(stderr, "%s", buf);
+		fprintf(stderr, "\"\x1b[0m\n");
+	}
 	return 0;
 }
 
@@ -418,11 +429,12 @@ static void printVersion(void) {
 }
 
 static void printHelp(char *name) {
-	fprintf(stderr, "Usage: %s [-hvs] server-ip [port]\n"
+	fprintf(stderr, "Usage: %s [-hvse] server-ip [port]\n"
 			"Options:\n"
 			"\th: Print out this help\n"
 			"\tv: Print out the version message\n"
-			"\ts: Disable segfault handling\n", name);
+			"\ts: Disable segfault handling\n"
+			"\te: Echo all network traffic\n", name);
 }
 
 int main(int argc, char *argv[]) {
@@ -433,7 +445,7 @@ int main(int argc, char *argv[]) {
 	int port = 12317;
 	int seg_handle = TRUE;
 	int res;
-	while ((c = getopt (argc, argv, "hvs")) != -1) {
+	while ((c = getopt (argc, argv, "hvse")) != -1) {
 		switch (c) {
 			case 'h':
 				printHelp(argv[0]);
@@ -443,6 +455,9 @@ int main(int argc, char *argv[]) {
 				break;
 			case 's':
 				seg_handle = FALSE;
+				break;
+			case 'e':
+				echo_mode = TRUE;
 				break;
 		}
 	}
