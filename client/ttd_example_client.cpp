@@ -2,6 +2,8 @@
 #include <cstdlib>
 #include "ttd.h"
 
+int size;
+
 
 /*
  *   This is called when your client connects to the server. You need to
@@ -24,7 +26,7 @@ void clientRegister() {
  *   called, entityInfo will be called.
  */
 void clientInit(int numPlayers, int boardSize, int numResourceTypes, int startMoney, int pid) {
-
+	size = boardSize;
 }
 
 /*
@@ -75,6 +77,14 @@ void clientPlayerMoved(int pid, int r, int c, int d) {
  *
  *   If you have <= 0 money, then this function will *not* be called.
  */
+
+int hackX = 0;
+int hackY = 0;
 void clientDoTurn() {
-	
+	if (hackX == size) {
+		hackX = 0;
+		hackY++;
+	}
+	makeMove(hackY, hackX, DOWN);
+	hackX++;
 }

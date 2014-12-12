@@ -116,6 +116,7 @@ void makeMove(int r, int c, int d) {
 	move_r = r;
 	move_c = c;
 	move_d = d;
+	move_made = TRUE;
 }
 
 
