@@ -1,25 +1,25 @@
 package games.ttd;
 
 public class Producer extends Resource {
-    public int x, y;
+    public int r, c;
     public int colour;
     public int payoff;
 
-    public Producer(int x, int y, int c, int p) {
-        this.x = x;
-        this.y = y;
-        this.colour = c;
+    public Producer(int r, int c, int colour, int p) {
+        this.r = r;
+        this.c = c;
+        this.colour = colour;
         this.payoff = p;
     }
 
     public Producer(Producer p) {
-        x = p.x;
-        y = p.y;
+        r = p.r;
+        c = p.c;
         colour = p.colour;
         payoff = p.payoff;
     }
 
     public String toString() {
-        return x + " " + y + " " + colour + " " + payoff;
+        return r + " " + c + " " + colour + " " + payoff;
     }
 }

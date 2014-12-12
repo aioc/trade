@@ -1,23 +1,23 @@
 package games.ttd;
 
 public class Consumer extends Resource {
-    public int x, y;
+    public int r, c;
     public int colour;
 
-    public Consumer(int x, int y, int c) {
-        this.x = x;
-        this.y = y;
-        this.colour = c;
+    public Consumer(int r, int c, int colour) {
+        this.r = r;
+        this.c = c;
+        this.colour = colour;
     }
 
     public Consumer(Consumer p) {
-        x = p.x;
-        y = p.y;
+        r = p.r;
+        c = p.c;
         colour = p.colour;
     }
 
     public String toString() {
-        return x + " " + y + " " + colour;
+        return r + " " + c + " " + colour;
     }
 }
 

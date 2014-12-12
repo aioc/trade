@@ -9,25 +9,25 @@ public enum Turn {
 	INVALID(-1, -1, -1);
 	
 	private int dir;
-    private int x, y;
+    private int r, c;
 	
-	private Turn(int dir, int x, int y) {
+	private Turn(int dir, int r, int c) {
 		this.dir = dir;
-        this.x = x;
-        this.y = y;
+        this.r = r;
+        this.c = c;
 	}
 
-    public void setSquare(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public void setSquare(int r, int c) {
+        this.r = r;
+        this.c = c;
     }
 
-    public int x() {
-        return this.x;
+    public int r() {
+        return this.r;
     }
 
-    public int y() {
-        return this.y;
+    public int c() {
+        return this.c;
     }
 	
 	public static Turn findTurn(int dir) {
@@ -49,15 +49,15 @@ public enum Turn {
 	}
 	
 	public GamePerson applyToPlayer(GamePerson p, int time) {
-        assert x != -1;
-        assert y != -1;
+        assert r != -1;
+        assert c != -1;
 		GamePerson gp = new GamePerson(p);
-        gp.tracks.add(new Track(x, y, time, dir));
+        gp.tracks.add(new Track(r, c, time, dir));
 		return gp;
 	}
 
     public String toString() {
-        return x + " " + y + " " + dir;
+        return r + " " + c + " " + dir;
     }
 
 }

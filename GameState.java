@@ -83,15 +83,15 @@ public class GameState {
     private boolean tryJump(int index, int neighbourhoodRadius, double sameIntolerence, int differentRequirement, double nondifferentIntolerence, List<? extends Resource> mainType, List<? extends Resource> auxType) {
         double jumpChance = 0.0;
         for (int i = 0; i < mainType.size(); i++) {
-            if (Math.abs(mainType.get(i).x - mainType.get(index).x) <= neighbourhoodRadius
-                    && Math.abs(mainType.get(i).y - mainType.get(index).y) <= neighbourhoodRadius) {
+            if (Math.abs(mainType.get(i).r - mainType.get(index).r) <= neighbourhoodRadius
+                    && Math.abs(mainType.get(i).c - mainType.get(index).c) <= neighbourhoodRadius) {
                 jumpChance += sameIntolerence;
             }
         }
         int numDifferent = 0;
         for (int i = 0; i < auxType.size(); i++) {
-            if (Math.abs(auxType.get(i).x - mainType.get(index).x) <= neighbourhoodRadius
-                    && Math.abs(auxType.get(i).y - mainType.get(index).y) <= neighbourhoodRadius) {
+            if (Math.abs(auxType.get(i).r - mainType.get(index).r) <= neighbourhoodRadius
+                    && Math.abs(auxType.get(i).c - mainType.get(index).c) <= neighbourhoodRadius) {
                 numDifferent += 1;
             }
         }
@@ -107,27 +107,27 @@ public class GameState {
 	
     private void doJump(int index, List<? extends Resource> resources) {
 		Random rand = new Random();
-		int newX;
-		int newY;
+		int newR;
+		int newC;
         boolean bad = false;
 	    do {
-			newX = rand.nextInt(boardSize);
-			newY = rand.nextInt(boardSize);
+			newR = rand.nextInt(boardSize);
+			newC = rand.nextInt(boardSize);
 			for (int i = 0; !bad && i < numProducers; i++) {
-				if (newX == producers.get(i).x &&
-						newY == producers.get(i).y) {
+				if (newR == producers.get(i).r &&
+						newC == producers.get(i).c) {
                     bad = true;
 				}
 			}
 			for (int i = 0; !bad && i < numConsumers; i++) {
-				if (newX == consumers.get(i).x &&
-						newY == consumers.get(i).y) {
+				if (newR == consumers.get(i).r &&
+						newC == consumers.get(i).c) {
                     bad = true;
 				}
 			}
 		} while (bad);
-        resources.get(index).x = newX;
-        resources.get(index).y = newY;
+        resources.get(index).r = newR;
+        resources.get(index).c = newC;
     }
 
 	public void setPlayersAction(int playerID, Action a) {
@@ -141,10 +141,9 @@ public class GameState {
         for (int i = 0; i < numPlayers; i++) {
             GamePerson newP = allPlayers[i].action.getMove().applyToPlayer(allPlayers[i], tick);
             Track newTrack = newP.tracks.get(newP.tracks.size() - 1);
-            // TODO check these lines isn't bullshit.
-            int newX = newTrack.c + newTrack.dx;
-            int newY = newTrack.r + newTrack.dy;
-            if (newX < 0 || newX >= boardSize || newY < 0 || newY >= boardSize) {
+            int newR = newTrack.c + newTrack.dr;
+            int newC = newTrack.r + newTrack.dc;
+            if (newR < 0 || newR >= boardSize || newC < 0 || newC >= boardSize) {
                 newP = allPlayers[i];
                 allPlayers[i].lastTurn = Turn.NOP;
             }
@@ -190,7 +189,7 @@ public class GameState {
 	}
 
 	public boolean isValidAction(int playerID, Action a) {
-        return a.getMove() != Turn.INVALID && (a.getMove().x() < boardSize && a.getMove().y() < boardSize && a.getMove().x() >= 0 && a.getMove().y() >= 0);
+        return a.getMove() != Turn.INVALID && (a.getMove().r() < boardSize && a.getMove().c() < boardSize && a.getMove().r() >= 0 && a.getMove().c() >= 0);
 	}
 
 }

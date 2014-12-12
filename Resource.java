@@ -1,6 +1,6 @@
 package games.ttd;
 
 class Resource {
-    public int x, y;
+    public int r, c;
     public int colour;
 }

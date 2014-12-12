@@ -3,27 +3,27 @@ package games.ttd;
 public class Track {
     public int r, c;
     public int placedTime;
-    public int dx, dy;
+    public int dr, dc;
 
-    public Track(int r, int c, int placedTime, int dx, int dy) {
+    public Track(int r, int c, int placedTime, int dr, int dc) {
         this.r = r;
         this.c = c;
         this.placedTime = placedTime;
-        this.dx = dx;
-        this.dy = dy;
+        this.dr = dr;
+        this.dc = dc;
     }
 
     public Track(int r, int c, int placedTime, int dir) {
-        final int[] dx = {-1, 0, 1, 0};
-        final int[] dy = {0, 1, 0, -1};
+        final int[] dr = {-1, 0, 1, 0};
+        final int[] dc = {0, 1, 0, -1};
         this.r = r;
         this.c = c;
         this.placedTime = placedTime;
-        this.dx = dx[dir];
-        this.dy = dy[dir];
+        this.dr = dr[dir];
+        this.dc = dc[dir];
     }
 
     public String toString() {
-        return r + " " + c + " " + placedTime + " " + dx + " "  + dy;
+        return r + " " + c + " " + placedTime + " " + dr + " "  + dc;
     }
 }
