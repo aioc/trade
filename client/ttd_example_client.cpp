@@ -76,5 +76,5 @@ void clientPlayerMoved(int pid, int r, int c, int d) {
  *   If you have <= 0 money, then this function will *not* be called.
  */
 void clientDoTurn() {
-
+	
 }
