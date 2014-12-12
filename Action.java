@@ -25,9 +25,14 @@ public class Action {
            } else if (!tokens[0].equals("MOVE")) {
                throw new BadProtocolException("Getting action: Invalid identifier (got " + inputString + ")");
            } else {
-               int row = Integer.parseInt(tokens[1]);
-               int col = Integer.parseInt(tokens[2]);
-               int dir = Integer.parseInt(tokens[3]);
+        	   int row, col, dir;
+        	   try {
+                   row = Integer.parseInt(tokens[1]);
+                   col = Integer.parseInt(tokens[2]);
+                   dir = Integer.parseInt(tokens[3]);
+        	   } catch (NumberFormatException e) {
+        		   throw new BadProtocolException("Getting action: Bad numbers (got " + inputString + ")");
+        	   }
                Turn move = Turn.findTurn(dir);
                if (move == Turn.INVALID) {
                    throw new BadProtocolException("Getting action: Invalid move character (got " + inputString + ")");
