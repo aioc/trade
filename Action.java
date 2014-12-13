@@ -19,7 +19,11 @@ public class Action {
            String[] tokens = inputString.split("\\s");
            Action finalA;
            if (tokens.length < 4) {
-               throw new BadProtocolException("Getting action: Not enough arguments (got " + inputString + ")");
+        	   if (tokens.length == 1 && tokens[0].equals("MOVE")) {
+        		   finalA = new Action(Turn.NOP);
+        	   } else {
+        		   throw new BadProtocolException("Getting action: Not enough arguments (got " + inputString + ")");
+        	   }
            } else if (tokens.length > 4) {
                throw new BadProtocolException("Getting action: Too many arguments (got " + inputString + ")");
            } else if (!tokens[0].equals("MOVE")) {

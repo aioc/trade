@@ -322,6 +322,7 @@ public class GameState {
 
 	public void killPlayer(int playerID) {
 		killStart.add(playerID);
+		allPlayers[playerID].lastTurn = Turn.NOP;
 	}
 
 	public boolean isValidAction(int playerID, Action a) {
