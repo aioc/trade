@@ -259,40 +259,36 @@ public class GameState {
 
 	public void implementMoves() {
 		this.tick++;
-		// TODO implementMoves()
 		List<GameEvent> events = new ArrayList<GameEvent>();
 		// First of all, apply all moves.
 		for (int i = 0; i < numPlayers; i++) {
 			GamePerson newP = allPlayers[i].action.getMove().applyToPlayer(allPlayers[i], tick);
+			if (newP.lastTurn == Turn.NOP || newP.lastTurn == Turn.INVALID) {
+				allPlayers[i] = newP;
+				continue;
+			}
 			Track newTrack = newP.tracks.get(newP.tracks.size() - 1);
 			int newR = newTrack.c + newTrack.dr;
 			int newC = newTrack.r + newTrack.dc;
-			boolean goodTrack = true;
 			if (newR < 0 || newR >= boardSize || newC < 0 || newC >= boardSize
 					|| board[newTrack.r][newTrack.c][newTrack.toDir()][i] != 0) {
 				newP = allPlayers[i];
-				allPlayers[i].lastTurn = Turn.NOP;
-				goodTrack = false;
-			}
-			if (goodTrack) {
+				allPlayers[i].lastTurn = Turn.INVALID;
+			} else {
 				board[newTrack.r][newTrack.c][newTrack.toDir()][i] = tick;
 				board[newR][newC][(newTrack.toDir() + 2) % 4][i] = tick;
 				newP.money--;
 			}
-
 			allPlayers[i] = newP;
 		}
 		for (int i = 0; i < numProducers; i++) {
 			for (int j = 0; j < numPlayers; j++) {
 				if (paidOut[i][j])
 					continue;
-				// TODO check if this producer should pay out.
-				// check if there's a path from producer i using player j's
-				// tracks
 				Pair<Consumer, List<GamePerson>> path = pathFind(producers.get(i), j);
 				if (path.getL() != null) {
 					// payout P - path
-					allPlayers[i].money += producers.get(i).payoff * manhattanDist(producers.get(i), path.getL())
+					allPlayers[j].money += producers.get(i).payoff * manhattanDist(producers.get(i), path.getL())
 							- path.getR().size();
 					for (GamePerson p : path.getR()) {
 						p.money++;

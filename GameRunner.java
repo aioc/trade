@@ -96,6 +96,12 @@ public class GameRunner implements GameInstance {
                 }
             }
             state.implementMoves();
+            for (int i = 0; i < players.size(); i++) {
+            	if (state.getPerson(i).lastTurn == Turn.INVALID) {
+            		state.killPlayer(i);
+            		killPlayers(Arrays.asList(i));
+            	}
+            }
         }
         /* The game is over. Check for money, fill in finalRanks and
          * results.put(players.get(i), getReward(finalRanks[i] - 1));

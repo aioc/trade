@@ -52,9 +52,10 @@ public enum Turn {
         assert r != -1;
         assert c != -1;
 		GamePerson gp = new GamePerson(p);
-		if (dir != NOP.dir && dir != INVALID.dir) { 
+		if (this != NOP && this != INVALID) { 
 			gp.tracks.add(new Track(r, c, time, dir));
 		}
+		gp.lastTurn = this;
 		return gp;
 	}
 
