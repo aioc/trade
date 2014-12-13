@@ -139,6 +139,15 @@ int aquireTarget(void) {
 	return bestMoney != -1;
 }
 
+void finishedConnect(struct producer_info p) {
+	int i;
+	for (i = 0; i < numProd; i++) {
+		if (p.r == allProducers[i].r && p.c == allProducers[i].c) {
+			haveConnected[i] = TRUE;
+		}
+	}
+}
+
 void clientDoTurn(void) {
 	int shouldMove = TRUE;
 	int r, c, d;
@@ -151,6 +160,7 @@ void clientDoTurn(void) {
 		calcPlace(&r, &c, &d);
 		while (doesOwn[myId][r][c][d] && shouldMove) {
 			if (place == manDis(targetFrom, targetTo)) {
+				finishedConnect(targetFrom);
 				if (!aquireTarget()) {
 					shouldMove = FALSE;
 					break;
