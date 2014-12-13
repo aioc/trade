@@ -259,20 +259,21 @@ public class GameState {
 		// First of all, apply all moves.
 		for (int i = 0; i < numPlayers; i++) {
 			GamePerson newP = allPlayers[i].action.getMove().applyToPlayer(allPlayers[i], tick);
-			if (newP.lastTurn == Turn.NOP || newP.lastTurn == Turn.INVALID) {
+			System.out.println(i + " did " + newP.lastTurn.toString());
+			if (newP.lastTurn == Turn.NOP) {
 				allPlayers[i] = newP;
 				continue;
 			}
-			Track newTrack = newP.tracks.get(newP.tracks.size() - 1);
-			int newR = newTrack.r + Turn.dr[newTrack.d];
-			int newC = newTrack.c + Turn.dc[newTrack.d];
+			Turn t = newP.lastTurn;
+			int newR = t.r() + Turn.dr[t.getDir()];
+			int newC = t.c() + Turn.dc[t.getDir()];
 			if (newR < 0 || newR >= boardSize || newC < 0 || newC >= boardSize
-					|| board[newTrack.r][newTrack.c][newTrack.d][i] != 0) {
+					|| board[t.r()][t.c()][t.getDir()][i] != 0 || newP.money <= 0) {
 				newP = allPlayers[i];
 				allPlayers[i].lastTurn = Turn.INVALID;
 			} else {
-				board[newTrack.r][newTrack.c][newTrack.d][i] = tick;
-				board[newR][newC][(newTrack.d + 2) % 4][i] = tick;
+				board[t.r()][t.c()][t.getDir()][i] = tick;
+				board[newR][newC][(t.getDir() + 2) % 4][i] = tick;
 				newP.money--;
 			}
 			allPlayers[i] = newP;
@@ -286,6 +287,8 @@ public class GameState {
 					// payout P - path
 					allPlayers[j].money += producers.get(i).payoff * manhattanDist(producers.get(i), path.getL())
 							- path.getR().size();
+					System.out.println("Paid out " + j + " " + (producers.get(i).payoff * manhattanDist(producers.get(i), path.getL())
+							- path.getR().size()));
 					for (GamePerson p : path.getR()) {
 						p.money++;
 					}
