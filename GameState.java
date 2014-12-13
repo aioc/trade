@@ -176,8 +176,6 @@ public class GameState {
 			assert 1 == 0;
 			return null;
 		}
-		// resources.get(index).r = newR;
-		// resources.get(index).c = newC;
 	}
 
 	public void setPlayersAction(int playerID, Action a) {
@@ -316,8 +314,6 @@ public class GameState {
 		return boardSize;
 	}
 
-	/* TODO add some getters for the private members */
-
 	public int getNumberPlayers() {
 		return allPlayers.length;
 	}
@@ -335,5 +331,4 @@ public class GameState {
 				&& (a.getMove().r() < boardSize && a.getMove().c() < boardSize && a.getMove().r() >= 0 && a.getMove()
 						.c() >= 0);
 	}
-
 }
