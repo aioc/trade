@@ -8,6 +8,10 @@ public enum Turn {
 	NOP(4, 0, 0),
 	INVALID(-1, -1, -1);
 	
+
+    public static final int[] dr = {-1, 0, 1, 0};
+    public static final int[] dc = {0, 1, 0, -1};
+	
 	private int dir;
     private int r, c;
 	

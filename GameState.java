@@ -205,12 +205,10 @@ public class GameState {
 				cur = pq.remove();
 			}
 			seen[cur.r][cur.c] = true;
-			final int dr[] = { -1, 0, 1, 0 };
-			final int dc[] = { 0, -1, 0, 1 };
 			for (int k = 0; k < 4; k++) {
 				if (board[cur.r][cur.c][k][player] > 0) {
-					int newR = cur.r + dr[k];
-					int newC = cur.c + dc[k];
+					int newR = cur.r + Turn.dr[k];
+					int newC = cur.c + Turn.dc[k];
 					// Do we add stuff on?
 					List<GamePerson> newOwners = new ArrayList<>();
 					int bestTurn = board[cur.r][cur.c][k][player] - 1;
@@ -266,15 +264,15 @@ public class GameState {
 				continue;
 			}
 			Track newTrack = newP.tracks.get(newP.tracks.size() - 1);
-			int newR = newTrack.c + newTrack.dr;
-			int newC = newTrack.r + newTrack.dc;
+			int newR = newTrack.r + Turn.dr[newTrack.d];
+			int newC = newTrack.c + Turn.dc[newTrack.d];
 			if (newR < 0 || newR >= boardSize || newC < 0 || newC >= boardSize
-					|| board[newTrack.r][newTrack.c][newTrack.toDir()][i] != 0) {
+					|| board[newTrack.r][newTrack.c][newTrack.d][i] != 0) {
 				newP = allPlayers[i];
 				allPlayers[i].lastTurn = Turn.INVALID;
 			} else {
-				board[newTrack.r][newTrack.c][newTrack.toDir()][i] = tick;
-				board[newR][newC][(newTrack.toDir() + 2) % 4][i] = tick;
+				board[newTrack.r][newTrack.c][newTrack.d][i] = tick;
+				board[newR][newC][(newTrack.d + 2) % 4][i] = tick;
 				newP.money--;
 			}
 			allPlayers[i] = newP;
