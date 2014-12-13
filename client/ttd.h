@@ -97,27 +97,33 @@ extern "C" {
 	void clientPlayerUpdate(int pid, int newMoney);
 
 	/*
-	 *   This is called once for all players who made a move last turn. This
-	 *   will only be called after every call to clientPlayerUpdate has been done.
+	 *   This is called once for *every* player in the game (including those
+	 *   with <= 0 money), telling you the move they made last turn (or that they
+	 *   did not make a move).
+	 *   This will only be called after every call to clientPlayerUpdate has been done.
 	 *
-	 *   This informs you of the move made by that player. 0 <= pid < numPlayers,
-	 *   0 <= r, c < boardSize, and 0 <= d < 4.
+	 *   If moveMade != 0, then that player did make a move. In this case,
+	 *   0 <= pid < numPlayers, 0 <= r, c < boardSize, and 0 <= d < 4.
 	 *   This means a track was built or the rights bought between square (r,c)
 	 *   and the square in direction d from it (where the meaning of d is
 	 *   defined at the start of this file).
 	 *
+	 *   If moveMade == 0, then that player did not make a move. In this case
+	 *   0 <= pid < numPlayers, and r, c and d are undefinied.
+	 *
 	 *   You are not required to call anything in here.
 	 */
-	void clientPlayerMoved(int pid, int r, int c, int d);
+	void clientPlayerMoved(int pid, int moveMade, int r, int c, int d);
 
 	// ******** This function will be called *WHEN* it is your turn ********
 
 	/*
 	 *   This is called when it is time for you to take your turn. While in the
-	 *   function, you must call makeMove once. If you make multiple calls to
-	 *   makeMove, only the final call will be considered.
+	 *   function, you must call either makeMove or makeNoMove once. If you
+	 *   make multiple calls to makeMove or makeNoMove, only the final call
+	 *   will be considered.
 	 *
-	 *   If you have <= 0 money, then this function will *not* be called.
+	 *   If you have <= 0 money, then you must only call makeNoMove().
 	 */
 	void clientDoTurn(void);
 
@@ -150,6 +156,13 @@ extern "C" {
 	 *   This can only be called in clientDoTurn.
 	 */
 	void makeMove(int r, int c, int d);
+	
+	/*   
+	 *   This will tell the server that you do not want to make a move this turn.
+	 *
+	 *   This can only be called in clientDoTurn.
+	 */
+	void makeNoMove(void);
 
 	/////////////////////////////////////////////////////////////////////
 

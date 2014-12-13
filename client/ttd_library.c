@@ -89,6 +89,7 @@ static int colour_r, colour_g, colour_b;
 static char name[17];
 
 static int move_made;
+static int no_move_wanted;
 static int move_r, move_c, move_d;
 
 void setName(const char *n) {
@@ -117,8 +118,13 @@ void makeMove(int r, int c, int d) {
 	move_c = c;
 	move_d = d;
 	move_made = TRUE;
+	no_move_wanted = FALSE;
 }
 
+void makeNoMove(void) {
+	ensureState(STATE_MAKEMOVE, "makeMove");
+	no_move_wanted = TRUE;
+}
 
 ///////////////////////////////////////////////
 //
@@ -215,8 +221,14 @@ static int handleYourMove(char *args) {
 		fprintf(stderr, "No	move was made\n");
 		raise(SIGUSR1);
 	}
-	if (sendPrintf("MOVE %d %d %d\n", move_r, move_c, move_d)) {
-		return -1;
+	if (no_move_wanted) {
+		if (sendPrintf("MOVE\n")) {
+			return -1;
+		}
+	} else {
+		if (sendPrintf("MOVE %d %d %d\n", move_r, move_c, move_d)) {
+			return -1;
+		}
 	}
 	return 0;
 }
@@ -233,12 +245,20 @@ static int handleCashmoney(char *args) {
 }
 
 static int handleInvest(char *args) {
-	int pid, r, c, d;
+	int pid;
+	int r, c, d;
+	r = 420;
+	c = 1337;
+	d = 9001;
+	int was_move = TRUE;
 	if (sscanf(args, "%d %d %d %d", &pid, &r, &c, &d) != 4) {
-		internalError("Bad arguments on INVEST: %s\n", args);
+		if (sscanf(args, "%d", &pid) != 1) {
+			internalError("Bad arguments on INVEST: %s\n", args);
+		}
+		was_move = FALSE;
 	}
 	alarm(1);
-	clientPlayerMoved(pid, r, c, d);
+	clientPlayerMoved(pid, was_move, r, c, d);
 	alarm(0);
 	return 0;
 }
