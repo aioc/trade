@@ -58,7 +58,6 @@ public class GameState {
 		}
 		for (int i = 0; i < numProducers; i++) {
 			map[producers.get(i).c][producers.get(i).r] = 'P';
-			System.out.println(producers.get(i).c);
 		}
 		for (int i = 0; i < numConsumers; i++) {
 			map[consumers.get(i).c][consumers.get(i).r] = 'C';
@@ -94,6 +93,7 @@ public class GameState {
 		for (int i = 0; i < numConsumers; i++) {
             consumers.set(i, (Consumer)doJump(consumers.get(i)));
 		}
+
 		for (int iter = 0; iter < iterations; iter++) {
             ArrayList<Integer> prodOrder = new ArrayList<Integer>();
             ArrayList<Integer> consOrder = new ArrayList<Integer>();
@@ -104,12 +104,12 @@ public class GameState {
             Collections.shuffle(prodOrder);
             Collections.shuffle(consOrder);
 			for (int i = 0; i < prodOrder.size(); i++) {
-                producers.set(i, (Producer)tryJump(prodOrder.get(i), neighbourhoodRadius, sameIntolerence,
+                producers.set(prodOrder.get(i), (Producer)tryJump(prodOrder.get(i), neighbourhoodRadius, sameIntolerence,
                         differentRequirement, nondifferentIntolerence, changeToResourceList(producers),
                         changeToResourceList(consumers)));
 			}
 			for (int i = 0; i < consOrder.size(); i++) {
-                consumers.set(i, (Consumer)tryJump(consOrder.get(i), neighbourhoodRadius, sameIntolerence,
+                consumers.set(consOrder.get(i), (Consumer)tryJump(consOrder.get(i), neighbourhoodRadius, sameIntolerence,
                         differentRequirement, nondifferentIntolerence, changeToResourceList(consumers),
                         changeToResourceList(producers)));
 			}
@@ -139,7 +139,7 @@ public class GameState {
             return mainType.get(index);
         }
     }
-	
+    
     private Resource doJump(Resource resource) {
 		Random rand = new Random();
 		int newR;
