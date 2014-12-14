@@ -62,6 +62,9 @@ public class GameState {
 		for (int i = 0; i < numConsumers; i++) {
 			map[consumers.get(i).c][consumers.get(i).r] = 'C';
 		}
+
+		visualReport.reportProducers(producers);
+		visualReport.reportConsumers(consumers);
 	}
 
 	private List<Resource> changeToResourceList(List<? extends Resource> l) {

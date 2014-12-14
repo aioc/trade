@@ -10,13 +10,11 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import javax.imageio.ImageIO;
 import javax.sound.sampled.Clip;
 
 import core.interfaces.PersistentPlayer;
@@ -37,6 +35,8 @@ public class GameVisualiser {
 	private int boardSize;
 	private boolean isVisualising;
 	private List<PersistentPlayer> players;
+	private List<Producer> producers;
+	private List<Consumer> consumers;
 	private GameStateInfo previousState;
 	private GameStateInfo currentState;
 	private Integer framesPerThisState;
@@ -51,6 +51,8 @@ public class GameVisualiser {
 	BufferedImage prerenderedBackground;
 	private int sizeBoard;
 	private int sizeSquare;
+	private int sizeRectWidth;
+	private int sizeRectHeight;
 	private int borderSquareSize;
 	private Rectangle boardBox; // The bounding box of the game board.
 	private Rectangle paintBox; // The portion of the screen inside the outer border.
@@ -122,6 +124,20 @@ public class GameVisualiser {
 	public void handleWindowResize(int width, int height) {
 		prepareBackground(width, height);
 	}
+	
+	public void reportProducers(List<Producer> p) {
+		producers = new ArrayList<Producer>(p.size());
+		for (Producer pp : p) {
+			producers.add(new Producer(pp));
+		}
+	}
+
+	public void reportConsumers(List<Consumer> p) {
+		consumers = new ArrayList<Consumer>(p.size());
+		for (Consumer pp : p) {
+			consumers.add(new Consumer(pp));
+		}
+	}
 
 	/**
 	 * Recalculates all 'constants' dependent on window size (e.g. board width in pixels);
@@ -134,23 +150,43 @@ public class GameVisualiser {
 		if (sizeBoard < 0) {
 			sizeBoard = 0;
 		}
-		boardBox = new Rectangle(paintBox.x + BORDER_SIZE, paintBox.y + BORDER_SIZE, sizeBoard, sizeBoard);
+		int rectWidth = (17 * (paintBox.width - (2 * BORDER_SIZE))) / 20,
+			rectHeight = paintBox.height - (2 * BORDER_SIZE);
+		boardBox = new Rectangle(paintBox.x + BORDER_SIZE, paintBox.y + BORDER_SIZE, rectWidth, rectHeight);
+		sizeRectWidth = rectWidth / boardSize;
+		sizeRectHeight = rectHeight / boardSize;
 		sizeSquare = sizeBoard / boardSize;
 		borderSquareSize = (sizeSquare / SQUARE_BORDER_DIVSOR) + 1;
 		// Draw background
 		prerenderedBackground = new BufferedImage(sWidth, sHeight, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = (Graphics2D) prerenderedBackground.getGraphics();
-		g.setColor(Color.RED.darker().darker());
+		g.setColor(Color.BLACK);
 		g.fillRect(paintBox.x, paintBox.y, paintBox.width, paintBox.height);
 		g.setColor(Color.WHITE);
 		for (int i = 0; i < boardSize; i++) {
 			for (int j = 0; j < boardSize; j++) {
 				g.fillRect(
-					boardBox.x + (j * sizeSquare),
-					boardBox.y + (i * sizeSquare),
-					sizeSquare - borderSquareSize,
-					sizeSquare - borderSquareSize);
+					boardBox.x + (j * sizeRectWidth),
+					boardBox.y + (i * sizeRectHeight),
+					sizeRectWidth - borderSquareSize,
+					sizeRectHeight - borderSquareSize);
 			}
+		}
+		for (Producer p : producers) {
+			g.setColor(p.getColour().darker().darker().darker());
+			g.fillRect(
+					boardBox.x + (p.c * sizeRectWidth),
+					boardBox.y + (p.r * sizeRectHeight),
+					sizeRectWidth - borderSquareSize,
+					sizeRectHeight - borderSquareSize);
+		}
+		for (Consumer c : consumers) {
+			g.setColor(c.getColour().brighter().brighter().brighter().brighter());
+			g.fillRect(
+					boardBox.x + (c.c * sizeRectWidth),
+					boardBox.y + (c.r * sizeRectHeight),
+					sizeRectWidth - borderSquareSize,
+					sizeRectHeight - borderSquareSize);
 		}
 	}
 	
@@ -167,7 +203,6 @@ public class GameVisualiser {
 			return;
 		}
 		List<GamePerson> curPeople = currentState.getL();
-		List<GamePerson> prevPeople = (previousState == null) ? currentState.getL() : previousState.getL();
 		if (paintBox.isEmpty()) {
 			return;
 		}

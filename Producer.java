@@ -1,11 +1,10 @@
 package games.ttd;
 
 public class Producer extends Resource {
-    public int r, c;
-    public int colour;
     public int payoff;
 
     public Producer(int r, int c, int colour, int p) {
+		super(r, c, colour);
         this.r = r;
         this.c = c;
         this.colour = colour;
@@ -13,9 +12,7 @@ public class Producer extends Resource {
     }
 
     public Producer(Producer p) {
-        r = p.r;
-        c = p.c;
-        colour = p.colour;
+		super(p.r, p.c, p.colour);
         payoff = p.payoff;
     }
 
