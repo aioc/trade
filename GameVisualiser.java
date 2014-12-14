@@ -214,6 +214,34 @@ public class GameVisualiser {
 		g.fillRect(textBox.x, textBox.y, textBox.width, textBox.height);
 		drawStatBoxes(g, textBox, curPeople);
         // TODO add in drawing code here!
+		for (int i = 0; i < currentState.getL().size(); i++) {
+			GamePerson person = currentState.getL().get(i);
+			int red = (((Player)players.get(i)).getColour() >> 16) & 0xFF;
+			int green = (((Player)players.get(i)).getColour() >> 8) & 0xFF;
+			int blue = ((Player)players.get(i)).getColour() & 0xFF;
+			g.setColor(new Color(red, green, blue));
+			for (Track track : person.tracks) {
+				int playerDotW = sizeRectWidth * (i + 1) / (players.size() + 1);
+				int playerDotH = sizeRectHeight * (i + 1) / (players.size() + 1);
+				// We have numPlayers dots evenly spaced between the TL and BR
+				// of the square. We are going to connect the ith player to the
+				// ith of these dots.
+				if (track.d == 1 || track.d == 3) {
+					g.drawLine(track.c + playerDotW,
+								track.r + playerDotH,
+								track.c + playerDotW + sizeRectWidth,
+								track.r + playerDotH
+							);
+				} else {
+					g.drawLine(track.c + playerDotW,
+								track.r + playerDotH,
+								track.c + playerDotW,
+								track.r + playerDotH + sizeRectHeight
+							);
+				}
+
+			}
+		}
 		/*
 		 * BEGIN HACKING CODE
 		 */
