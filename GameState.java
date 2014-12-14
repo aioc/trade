@@ -50,18 +50,6 @@ public class GameState {
 		consumers = new ArrayList<Consumer>();
 
 		nonbigotedGeneration(8, 0.05, 2, 0.05, 10, 15, 100);
-		char[][] map = new char[boardSize][boardSize];
-		for (int c = 0; c < boardSize; c++) {
-			for (int r = 0; r < boardSize; r++) {
-				map[c][r] = '.';
-			}
-		}
-		for (int i = 0; i < numProducers; i++) {
-			map[producers.get(i).c][producers.get(i).r] = 'P';
-		}
-		for (int i = 0; i < numConsumers; i++) {
-			map[consumers.get(i).c][consumers.get(i).r] = 'C';
-		}
 
 		visualReport.reportProducers(producers);
 		visualReport.reportConsumers(consumers);
