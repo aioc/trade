@@ -10,7 +10,7 @@ import core.server.DisconnectedException;
 
 public class GameFactory implements GameBuilder {
 
-    public int boardSize = 10;
+    public int boardSize = 50;
     public int numTypes = 5;
     public int numProducers = 15;
     public int numConsumers = 45;
