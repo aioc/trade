@@ -33,6 +33,8 @@ public class GameRunner implements GameHandler {
 
 	public void setEventVisualiser(EventBasedFrameVisualiser<VisualGameState> vis) {
 		this.vis = vis;
+		//TODO: Give to state so it can report
+		state.setUpForVisualisation(vis);
 	}
 
 	private boolean isFinished(int playerIndex) {

@@ -1,10 +1,15 @@
 package games.ttd;
 
+import games.ttd.visualisation.VisualGameState;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Random;
+
+import core.visualisation.EventBasedFrameVisualiser;
+import core.visualisation.VisualGameEvent;
 
 public class GameState {
 
@@ -22,6 +27,8 @@ public class GameState {
 
 	// Stores the turn of when it was built
 	private int board[][][][];
+
+	private EventBasedFrameVisualiser<VisualGameState> vis;
 
 	public GameState(int numPlayers, int boardSize, int numTypes, int numProducers, int numConsumers, int startMoney) {
 		this.tick = 0;
@@ -46,6 +53,15 @@ public class GameState {
 		consumers = new ArrayList<Consumer>();
 
 		nonbigotedGeneration(8, 0.05, 2, 0.05, 10, 15, 100);
+	}
+
+	public void setUpForVisualisation(EventBasedFrameVisualiser<VisualGameState> vis) {
+		// TODO: REPORT ALL EVENTS TO THIS!
+		this.vis = vis;
+		// TODO: Set up the base state (such as where producers and stuff are,
+		// how much money each player has, board size, etc)
+		
+		
 	}
 
 	private List<Resource> changeToResourceList(List<? extends Resource> l) {
@@ -270,8 +286,11 @@ public class GameState {
 					// payout P - path
 					allPlayers[j].money += producers.get(i).payoff * manhattanDist(producers.get(i), path.getL())
 							- path.getR().size();
-					System.out.println("Paid out " + j + " " + (producers.get(i).payoff * manhattanDist(producers.get(i), path.getL())
-							- path.getR().size()));
+					System.out.println("Paid out "
+							+ j
+							+ " "
+							+ (producers.get(i).payoff * manhattanDist(producers.get(i), path.getL()) - path.getR()
+									.size()));
 					for (GamePerson p : path.getR()) {
 						p.money++;
 					}
