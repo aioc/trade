@@ -105,7 +105,8 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 			// We have numPlayers dots evenly spaced between the TL and BR
 			// of the square. We are going to connect the ith player to the
 			// ith of these dots.
-			for (Track track : ((TTDGameEvent)(events.get(i)).tracks)) {
+			TTDGameEvent castedEvent = (TTDGameEvent)events.get(i);
+			for (Track track : castedEvent.tracks) {
 				if (track.d == 1 || track.d == 3) {
 					// d == 1 should be right, d == 3 should be left
 					g.drawLine(track.c + playerDotW,
