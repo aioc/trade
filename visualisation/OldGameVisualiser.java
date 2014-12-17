@@ -1,7 +1,6 @@
 package games.ttd.visualisation;
 
 import games.ttd.Consumer;
-import games.ttd.GameEvent;
 import games.ttd.GamePerson;
 import games.ttd.Pair;
 import games.ttd.Player;
@@ -28,7 +27,7 @@ import javax.sound.sampled.Clip;
 
 import core.interfaces.PersistentPlayer;
 
-public class GameVisualiser {
+public class OldGameVisualiser {
 	private static final int DEFAULT_FRAMES_PER_STATE = 5;
 	private static final int SPECIAL_FRAMES_PER_STATE = 15;
 	private static final int BORDER_SIZE = 10;
@@ -41,6 +40,12 @@ public class GameVisualiser {
 		}
 	}
 
+	private static class GameEvent {
+		String getRepresentation(List<PersistentPlayer> p) {
+			return "";
+		}
+	}
+	
 	private int boardSize;
 	private boolean isVisualising;
 	private List<PersistentPlayer> players;
@@ -66,7 +71,7 @@ public class GameVisualiser {
 	private Rectangle boardBox; // The bounding box of the game board.
 	private Rectangle paintBox; // The portion of the screen inside the outer border.
 
-	public GameVisualiser(List<PersistentPlayer> pl, int boardSize) {
+	public OldGameVisualiser(List<PersistentPlayer> pl, int boardSize) {
 		players = pl;
 		this.boardSize = boardSize;
 		states = new LinkedList<GameStateInfo>();

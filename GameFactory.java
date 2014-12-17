@@ -1,5 +1,8 @@
 package games.ttd;
 
+import games.ttd.visualisation.FrameVisualiser;
+import games.ttd.visualisation.VisualGameState;
+
 import java.util.List;
 import java.util.Random;
 
@@ -7,6 +10,7 @@ import core.interfaces.GameBuilder;
 import core.interfaces.GameInstance;
 import core.interfaces.PersistentPlayer;
 import core.server.DisconnectedException;
+import core.visualisation.EventBasedFrameVisualiser;
 
 public class GameFactory implements GameBuilder {
 
@@ -46,8 +50,10 @@ public class GameFactory implements GameBuilder {
 				p.getConnection().disconnect();
 			}
 		}
-		return new GameRunner(players, boardSize, numTypes, numProducers, numConsumers, initialMoney);
-
+		GameRunner gr = new GameRunner(players, boardSize, numTypes, numProducers, numConsumers, initialMoney);
+		FrameVisualiser fv = new FrameVisualiser();
+		EventBasedFrameVisualiser<VisualGameState> vis = new EventBasedFrameVisualiser<VisualGameState>(gr, fv);
+		return vis;
     }
 }
 

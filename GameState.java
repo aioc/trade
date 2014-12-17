@@ -1,7 +1,5 @@
 package games.ttd;
 
-import games.ttd.visualisation.GameVisualiser;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,17 +23,13 @@ public class GameState {
 	// Stores the turn of when it was built
 	private int board[][][][];
 
-	private GameVisualiser visualReport;
-
-	public GameState(int numPlayers, int boardSize, int numTypes, int numProducers, int numConsumers, int startMoney,
-			GameVisualiser reportTo) {
+	public GameState(int numPlayers, int boardSize, int numTypes, int numProducers, int numConsumers, int startMoney) {
 		this.tick = 0;
 		this.numPlayers = numPlayers;
 		this.boardSize = boardSize;
 		this.numTypes = numTypes;
 		this.numProducers = numProducers;
 		this.numConsumers = numConsumers;
-		this.visualReport = reportTo;
 		paidOut = new boolean[numProducers][numPlayers];
 		for (int i = 0; i < numProducers; i++) {
 			for (int j = 0; j < numPlayers; j++) {
@@ -52,9 +46,6 @@ public class GameState {
 		consumers = new ArrayList<Consumer>();
 
 		nonbigotedGeneration(8, 0.05, 2, 0.05, 10, 15, 100);
-
-		visualReport.reportProducers(producers);
-		visualReport.reportConsumers(consumers);
 	}
 
 	private List<Resource> changeToResourceList(List<? extends Resource> l) {
@@ -248,7 +239,6 @@ public class GameState {
 
 	public void implementMoves() {
 		this.tick++;
-		List<GameEvent> events = new ArrayList<GameEvent>();
 		// First of all, apply all moves.
 		for (int i = 0; i < numPlayers; i++) {
 			GamePerson newP = allPlayers[i].action.getMove().applyToPlayer(allPlayers[i], tick);
@@ -289,7 +279,6 @@ public class GameState {
 				}
 			}
 		}
-		visualReport.addStateToVisualise(allPlayers, events);
 		for (int i = 0; i < numPlayers; i++) {
 			allPlayers[i].preAction = allPlayers[i].action;
 			allPlayers[i].action = Action.noAction();

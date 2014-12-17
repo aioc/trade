@@ -1,6 +1,8 @@
 package games.ttd;
 
-import games.ttd.visualisation.GameVisualiser;
+import games.ttd.visualisation.FrameVisualiser;
+import games.ttd.visualisation.OldGameVisualiser;
+import games.ttd.visualisation.VisualGameState;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -13,13 +15,15 @@ import core.interfaces.GameInstance;
 import core.interfaces.PersistentPlayer;
 import core.server.ClientConnection;
 import core.server.DisconnectedException;
+import core.visualisation.EventBasedFrameVisualiser;
+import core.visualisation.GameHandler;
 
-public class GameRunner implements GameInstance {
+public class GameRunner implements GameHandler {
 
 	private GameState state;
 	private List<PersistentPlayer> players;
 	private Map<PersistentPlayer, Integer> results;
-	private GameVisualiser visualiser;
+	private EventBasedFrameVisualiser<VisualGameState> vis;
 
 	private int[] finalRanks;
 
@@ -29,9 +33,11 @@ public class GameRunner implements GameInstance {
 
 		results = new HashMap<PersistentPlayer, Integer>();
 		finalRanks = new int[players.size()];
-		visualiser = new GameVisualiser(players, boardSize);
-		state = new GameState(players.size(), boardSize, numTypes, numProducers, numConsumers, startingMoney,
-				visualiser);
+		state = new GameState(players.size(), boardSize, numTypes, numProducers, numConsumers, startingMoney);
+	}
+	
+	public void setEventVisualiser(EventBasedFrameVisualiser<VisualGameState> vis) {
+		this.vis = vis;
 	}
 
 	private boolean isFinished(int playerIndex) {
@@ -125,15 +131,15 @@ public class GameRunner implements GameInstance {
 				// state.setWinner(i);
 			}
 		}
-		while (visualiser.stillHasStatesQueued() && visualiser.hasVisualised()) {
+		while (!vis.finishedVisualising() && vis.isVisualising()) {
 			try {
-				Thread.sleep(10);
+				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		if (visualiser.hasVisualised()) {
+		if (vis.isVisualising()) {
 			try {
 				Thread.sleep(2000);
 			} catch (InterruptedException e) {
@@ -141,16 +147,6 @@ public class GameRunner implements GameInstance {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	@Override
-	public void getVisualisation(Graphics g, int width, int height) {
-		visualiser.visualise((Graphics2D) g, width, height);
-	}
-
-	@Override
-	public void handleWindowResize(int width, int height) {
-		visualiser.handleWindowResize(width, height);
 	}
 
 	@Override
