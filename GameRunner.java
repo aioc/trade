@@ -1,17 +1,12 @@
 package games.ttd;
 
-import games.ttd.visualisation.FrameVisualiser;
-import games.ttd.visualisation.OldGameVisualiser;
 import games.ttd.visualisation.VisualGameState;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import core.interfaces.GameInstance;
 import core.interfaces.PersistentPlayer;
 import core.server.ClientConnection;
 import core.server.DisconnectedException;
@@ -35,7 +30,7 @@ public class GameRunner implements GameHandler {
 		finalRanks = new int[players.size()];
 		state = new GameState(players.size(), boardSize, numTypes, numProducers, numConsumers, startingMoney);
 	}
-	
+
 	public void setEventVisualiser(EventBasedFrameVisualiser<VisualGameState> vis) {
 		this.vis = vis;
 	}
