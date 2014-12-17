@@ -28,7 +28,7 @@ public class GameRunner implements GameHandler {
 
 		results = new HashMap<PersistentPlayer, Integer>();
 		finalRanks = new int[players.size()];
-		state = new GameState(players.size(), boardSize, numTypes, numProducers, numConsumers, startingMoney);
+		state = new GameState(players.size(), boardSize, numTypes, numProducers, numConsumers, startingMoney, players);
 	}
 
 	public void setEventVisualiser(EventBasedFrameVisualiser<VisualGameState> vis) {

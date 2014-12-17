@@ -2,12 +2,14 @@ package games.ttd;
 
 import games.ttd.visualisation.VisualGameState;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Random;
 
+import core.interfaces.PersistentPlayer;
 import core.visualisation.EventBasedFrameVisualiser;
 import core.visualisation.VisualGameEvent;
 
@@ -21,6 +23,7 @@ public class GameState {
 	private int tick;
 	private boolean[][] paidOut;
 	private GamePerson[] allPlayers;
+	private List<PersistentPlayer> pplayers;
 	private List<Integer> killStart;
 	private List<Producer> producers;
 	private List<Consumer> consumers;
@@ -30,7 +33,7 @@ public class GameState {
 
 	private EventBasedFrameVisualiser<VisualGameState> vis;
 
-	public GameState(int numPlayers, int boardSize, int numTypes, int numProducers, int numConsumers, int startMoney) {
+	public GameState(int numPlayers, int boardSize, int numTypes, int numProducers, int numConsumers, int startMoney, List<PersistentPlayer> pplayers) {
 		this.tick = 0;
 		this.numPlayers = numPlayers;
 		this.boardSize = boardSize;
@@ -51,17 +54,29 @@ public class GameState {
 		killStart = new ArrayList<Integer>();
 		producers = new ArrayList<Producer>();
 		consumers = new ArrayList<Consumer>();
+		this.pplayers = pplayers;
 		
 		nonbigotedGeneration();
 	}
 
 	public void setUpForVisualisation(EventBasedFrameVisualiser<VisualGameState> vis) {
-		// TODO: REPORT ALL EVENTS TO THIS!
 		this.vis = vis;
-		// TODO: Set up the base state (such as where producers and stuff are,
-		// how much money each player has, board size, etc)
 		
-		
+		VisualGameState s = vis.getCurState();
+		s.producers = producers;
+		s.consumers = consumers;
+		s.boardSize = boardSize;
+		s.money = new int[allPlayers.length];
+		s.colours = new Color[allPlayers.length];
+		s.names = new String[allPlayers.length];
+		for (int i = 0; i < allPlayers.length; i++) {
+			s.money[i] = allPlayers[i].money;
+			s.names[i] = ((Player)pplayers.get(i)).getName();
+			int red = (((Player)pplayers.get(i)).getColour() >> 16) & 0xFF;
+			int green = (((Player)pplayers.get(i)).getColour() >> 8) & 0xFF;
+			int blue = ((Player)pplayers.get(i)).getColour() & 0xFF;
+			s.colours[i] = new Color(red, green, blue);
+		}
 	}
 
 	private List<Resource> changeToResourceList(List<? extends Resource> l) {
@@ -336,7 +351,6 @@ public class GameState {
 					continue;
 				Pair<Consumer, List<GamePerson>> path = pathFind(producers.get(i), j);
 				if (path.getL() != null) {
-					// payout P - path
 					allPlayers[j].money += producers.get(i).payoff * manhattanDist(producers.get(i), path.getL())
 							- path.getR().size();
 					System.out.println("Paid out "
