@@ -9,13 +9,13 @@ import core.visualisation.VisualGameEvent;
 public class FrameVisualiser implements FrameVisualisationHandler<VisualGameState>{
 
 	@Override
-	public void generateBackground(int sWidth, int sHeight, Graphics2D g) {
+	public void generateBackground(VisualGameState state, int sWidth, int sHeight, Graphics2D g) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void generateState(int sWidth, int sHeight, VisualGameState state, Graphics2D g) {
+	public void generateState(VisualGameState state, int sWidth, int sHeight, Graphics2D g) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -27,7 +27,7 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 	}
 
 	@Override
-	public void animateEvents(List<VisualGameEvent> events) {
+	public void animateEvents(VisualGameState state, List<VisualGameEvent> events, int sWidth, int sHeight, Graphics2D g) {
 		// TODO Auto-generated method stub
 		
 	}

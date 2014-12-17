@@ -52,7 +52,7 @@ public class GameFactory implements GameBuilder {
 		}
 		GameRunner gr = new GameRunner(players, boardSize, numTypes, numProducers, numConsumers, initialMoney);
 		FrameVisualiser fv = new FrameVisualiser();
-		EventBasedFrameVisualiser<VisualGameState> vis = new EventBasedFrameVisualiser<VisualGameState>(gr, fv);
+		EventBasedFrameVisualiser<VisualGameState> vis = new EventBasedFrameVisualiser<VisualGameState>(gr, fv, new VisualGameState());
 		return vis;
     }
 }
