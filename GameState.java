@@ -1,5 +1,7 @@
 package games.ttd;
 
+import games.ttd.visualisation.GameVisualiser;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

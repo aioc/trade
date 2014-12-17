@@ -36,7 +36,7 @@ public class ResourceManager {
 		}
 		try {
             // replace this with a game-appropriate image or etc.
-			myImage = ImageIO.read(GameVisualiser.class.getResourceAsStream("heart.png"));
+			myImage = ImageIO.read(ResourceManager.class.getResourceAsStream("heart.png"));
 		} catch (Exception e) {
 			myImage = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
 			Graphics g = myImage.getGraphics();

@@ -1,4 +1,13 @@
-package games.ttd;
+package games.ttd.visualisation;
+
+import games.ttd.Consumer;
+import games.ttd.GameEvent;
+import games.ttd.GamePerson;
+import games.ttd.Pair;
+import games.ttd.Player;
+import games.ttd.Producer;
+import games.ttd.ResourceManager;
+import games.ttd.Track;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
