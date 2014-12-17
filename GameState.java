@@ -51,8 +51,8 @@ public class GameState {
 		killStart = new ArrayList<Integer>();
 		producers = new ArrayList<Producer>();
 		consumers = new ArrayList<Consumer>();
-
-		nonbigotedGeneration(8, 0.05, 2, 0.05, 10, 15, 100);
+		
+		nonbigotedGeneration();
 	}
 
 	public void setUpForVisualisation(EventBasedFrameVisualiser<VisualGameState> vis) {
@@ -72,8 +72,11 @@ public class GameState {
 		return ret;
 	}
 
-	private void nonbigotedGeneration(int neighbourhoodRadius, double sameIntolerence, int differentRequirement,
-			double nondifferentIntolerence, int minPayoff, int maxPayoff, int iterations) {
+	private void nonbigotedGeneration() {
+		final int minPayoff = 10;
+		final int maxPayoff = 15;
+		final int iterations = 100;
+		
 		Random rand = new Random();
 		for (int i = 0; i < numProducers; i++) {
 			producers.add(new Producer(0, 0, rand.nextInt(numTypes), rand.nextInt(maxPayoff - minPayoff + 1)
@@ -101,39 +104,89 @@ public class GameState {
 			Collections.shuffle(prodOrder);
 			Collections.shuffle(consOrder);
 			for (int i = 0; i < prodOrder.size(); i++) {
-				producers.set(
-						prodOrder.get(i),
-						(Producer) tryJump(prodOrder.get(i), neighbourhoodRadius, sameIntolerence,
-								differentRequirement, nondifferentIntolerence, changeToResourceList(producers),
+				producers.set(prodOrder.get(i),
+						(Producer) tryJump(prodOrder.get(i), changeToResourceList(producers),
 								changeToResourceList(consumers)));
 			}
 			for (int i = 0; i < consOrder.size(); i++) {
-				consumers.set(
-						consOrder.get(i),
-						(Consumer) tryJump(consOrder.get(i), neighbourhoodRadius, sameIntolerence,
-								differentRequirement, nondifferentIntolerence, changeToResourceList(consumers),
+				consumers.set(consOrder.get(i),
+						(Consumer) tryJump(consOrder.get(i), changeToResourceList(consumers),
 								changeToResourceList(producers)));
 			}
 		}
 	}
 
-	private Resource tryJump(int index, int neighbourhoodRadius, double sameIntolerence, int differentRequirement,
-			double nondifferentIntolerence, List<Resource> mainType, List<Resource> auxType) {
+	private Resource tryJump(int index, List<Resource> mainType, List<Resource> auxType) {
+		
+		final int neighbourhoodRadius = 8;
+		
+		final int sameLowA = 3;
+		final double sameLowIntolerenceA = 0.05;
+		final int sameHighA = 5;
+		final double sameHighIntolerenceA = 0.05;
+		final int differentLowA = 0;
+		final double differentLowIntolerenceA = 0.0;
+		final int differentHighA = 0;
+		final double differentHighIntolerenceA = 0.0;
+		
+		final int sameLowC = 0;
+		final double sameLowIntolerenceC = 0.05;
+		final int sameHighC = 3;
+		final double sameHighIntolerenceC = 0.05;
+		final int differentLowC = 1;
+		final double differentLowIntolerenceC = 0.05;
+		final int differentHighC = 5;
+		final double differentHighIntolerenceC = 0.05;
+		
 		double jumpChance = 0.0;
+		
+		int numSameDiffColour = 0;
+		int numSameSameColour = 0;
 		for (int i = 0; i < mainType.size(); i++) {
 			if (Math.abs(mainType.get(i).r - mainType.get(index).r) <= neighbourhoodRadius
 					&& Math.abs(mainType.get(i).c - mainType.get(index).c) <= neighbourhoodRadius) {
-				jumpChance += sameIntolerence;
+				if (mainType.get(i).colour == mainType.get(index).colour) {
+					numSameSameColour++;
+				} else {
+					numSameDiffColour++;
+				}
 			}
 		}
-		int numDifferent = 0;
+		int numDifferentDiffColour = 0;
+		int numDifferentSameColour = 0;
 		for (int i = 0; i < auxType.size(); i++) {
 			if (Math.abs(auxType.get(i).r - mainType.get(index).r) <= neighbourhoodRadius
 					&& Math.abs(auxType.get(i).c - mainType.get(index).c) <= neighbourhoodRadius) {
-				numDifferent += 1;
+				if (auxType.get(i).colour == mainType.get(index).colour) {
+					numDifferentSameColour++;
+				} else {
+					numDifferentDiffColour++;
+				}
 			}
 		}
-		jumpChance += nondifferentIntolerence * Math.max(differentRequirement - numDifferent, 0);
+		//jumpChance += nondifferentIntolerence * Math.max(differentRequirement - numDifferent, 0);
+		if (numSameDiffColour < sameLowC) {
+			jumpChance += sameLowIntolerenceC;
+		} else if (numSameDiffColour > sameHighC) {
+			jumpChance += sameHighIntolerenceC;
+		}
+		if (numSameSameColour < sameLowA) {
+			jumpChance += sameLowIntolerenceA;
+		} else if (numSameSameColour > sameHighA) {
+			jumpChance += sameHighIntolerenceA;
+		}
+		
+		if (numDifferentDiffColour < differentLowC) {
+			jumpChance += differentLowIntolerenceC;
+		} else if (numDifferentDiffColour > differentHighC) {
+			jumpChance += differentHighIntolerenceC;
+		}
+		if (numDifferentSameColour < differentLowA) {
+			jumpChance += differentLowIntolerenceA;
+		} else if (numDifferentSameColour > differentHighA) {
+			jumpChance += differentHighIntolerenceA;
+		}
+		
 		Random rand = new Random();
 		if (rand.nextDouble() < jumpChance) {
 			return doJump(mainType.get(index));
