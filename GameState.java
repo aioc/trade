@@ -316,7 +316,7 @@ public class GameState {
 		for (Consumer c : consumers) {
 			int manDis = manhattanDist(c, p);
 			int cost = bestForSquare[c.r][c.c].cost;
-			if (manDis < bestDis || (manDis == bestDis && cost < bestCost)) {
+			if (seen[c.r][c.c] && (manDis < bestDis || (manDis == bestDis && cost < bestCost))) {
 				bestDis = manDis;
 				bestCost = cost;
 				curCons = c;

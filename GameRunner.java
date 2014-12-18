@@ -132,7 +132,6 @@ public class GameRunner implements GameHandler {
 		vis.giveEvent(new EndGameEvent());
 		while (!vis.finishedVisualising() && vis.isVisualising()) {
 			try {
-				System.out.println("" + vis.finishedVisualising() + " " + vis.isVisualising());
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
