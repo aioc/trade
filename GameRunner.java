@@ -86,6 +86,9 @@ public class GameRunner implements GameHandler {
 				PersistentPlayer p = players.get(i);
 				if (!p.getConnection().isConnected() || isFinished(i)) {
 					state.setPlayersAction(i, Action.noAction());
+					if (state.getPerson(i).money > 0) {
+						state.killPlayer(i);
+					}
 					continue;
 				}
 				ClientConnection connection = p.getConnection();
