@@ -115,7 +115,6 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 		g.setColor(statBoxColour);
 		g.fillRect(textBox.x, textBox.y, textBox.width, textBox.height);
 		drawStatBoxes(g, textBox);
-		System.out.println("got " + events.size() + " events");
 		for (int i = 0; i < events.size(); i++) {
 			TTDGameEvent te = (TTDGameEvent)events.get(i);
 			for (Track track: te.tracks) {

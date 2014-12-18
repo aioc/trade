@@ -65,7 +65,7 @@ public class GameRunner implements GameHandler {
 				connection.sendInfo("CONS " + cons.get(j));
 		}
 
-		while (results.size() < players.size() - 1 /* && moves_exist() */) {
+		while (results.size() < players.size() - 1 && !state.gameOver()) {
 			for (int i = 0; i < players.size(); i++) {
 				PersistentPlayer p = players.get(i);
 				if (!p.getConnection().isConnected() && isFinished(i)) {
@@ -85,6 +85,7 @@ public class GameRunner implements GameHandler {
 			for (int i = 0; i < players.size(); i++) {
 				PersistentPlayer p = players.get(i);
 				if (!p.getConnection().isConnected() && isFinished(i)) {
+					state.setPlayersAction(i, Action.noAction());
 					continue;
 				}
 				ClientConnection connection = p.getConnection();
@@ -119,6 +120,7 @@ public class GameRunner implements GameHandler {
 				}
 			}
 		}
+		//TODO: Kill players in order of money
 		/*
 		 * The game is over. Check for money, fill in finalRanks and
 		 * results.put(players.get(i), getReward(finalRanks[i] - 1));

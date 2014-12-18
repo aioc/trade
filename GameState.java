@@ -331,7 +331,6 @@ public class GameState {
 		// First of all, apply all moves.
 		for (int i = 0; i < numPlayers; i++) {
 			GamePerson newP = allPlayers[i].action.getMove().applyToPlayer(allPlayers[i], tick);
-			//System.out.println(i + " did " + newP.lastTurn.toString());
 			if (newP.lastTurn == Turn.NOP) {
 				allPlayers[i] = newP;
 				continue;
@@ -373,10 +372,46 @@ public class GameState {
 				}
 			}
 		}
+		for (Integer i : killStart) {
+			allPlayers[i].money = -9001;
+			//TODO: Send event
+		}
 		for (int i = 0; i < numPlayers; i++) {
 			allPlayers[i].preAction = allPlayers[i].action;
 			allPlayers[i].action = Action.noAction();
 		}
+	}
+	
+	public boolean gameOver() {
+		// The game is over if:
+		// There are no players with > 0 money, or
+		// There are no more producers to hook up, or
+		// Both players send null moves on the previous turn, or
+		// Only one player with any money is left
+		int haveMoney = 0;
+		for (int i = 0; i < numPlayers && haveMoney <= 1; i++) {
+			if (allPlayers[i].money > 0) {
+				haveMoney++;
+			}
+		}
+		if (haveMoney <= 1) return true;
+		boolean noProd = true;
+		for (int i = 0; i < numProducers && noProd; i++) {
+			for (int j = 0; j < numPlayers; j++) {
+				if (!paidOut[i][j]) {
+					noProd = false;
+				}
+			}
+		}
+		if (noProd) return true;
+		boolean allNull = tick > 1;
+		for (int i = 0; i < numPlayers && allNull; i++) {
+			if (allPlayers[i].lastTurn != Turn.NOP) {
+				allNull = false;
+			}
+		}
+		if (allNull) return true;
+		return false;
 	}
 
 	public List<Producer> getProducers() {
