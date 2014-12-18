@@ -2,6 +2,7 @@ package games.ttd;
 
 import games.ttd.visualisation.VisualGameState;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +35,6 @@ public class GameRunner implements GameHandler {
 
 	public void setEventVisualiser(EventBasedFrameVisualiser<VisualGameState> vis) {
 		this.vis = vis;
-		//TODO: Give to state so it can report
 		state.setUpForVisualisation(vis);
 	}
 
@@ -44,7 +44,7 @@ public class GameRunner implements GameHandler {
 
 	private void killPlayers(List<Integer> toKill) {
 		for (Integer i : toKill) {
-			finalRanks[i] = players.size() - results.size();
+			finalRanks[i] = players.size() - results.size() - toKill.size() + 1;
 		}
 		for (Integer i : toKill) {
 			results.put(players.get(i), getReward(finalRanks[i] - 1));
@@ -123,13 +123,18 @@ public class GameRunner implements GameHandler {
 		}
 		while (results.size() < players.size()) {
 			int minV = -1;
-				for (int i = 0; i < players.size(); i++) {
-					System.out.println(i + " == " + state.getPerson(i).money);
+			List<Integer> curMin = null;
+			for (int i = 0; i < players.size(); i++) {
+				System.out.println(i + " == " + state.getPerson(i).money);
 				if (!isFinished(i) && (minV == -1 || (state.getPerson(i).money < state.getPerson(minV).money))) {
 					minV = i;
+					curMin = new ArrayList<Integer>();
+					curMin.add(i);
+				} else if (!isFinished(i) && (minV == -1 || (state.getPerson(i).money == state.getPerson(minV).money))) {
+					curMin.add(i);
 				}
 			}
-			killPlayers(Arrays.asList(minV));
+			killPlayers(curMin);
 		}
 		for (int i = 0; i < players.size(); i++) {
 			players.get(i).getConnection().sendInfo("GAMEOVER " + finalRanks[i]);
