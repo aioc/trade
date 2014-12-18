@@ -4,9 +4,11 @@ import games.ttd.Consumer;
 import games.ttd.Producer;
 import games.ttd.Track;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Stroke;
 import java.util.List;
 
 import core.visualisation.FrameVisualisationHandler;
@@ -44,7 +46,7 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 		// Draw background
 		g.setColor(Color.BLACK);
 		g.fillRect(paintBox.x, paintBox.y, paintBox.width, paintBox.height);
-		g.setColor(Color.WHITE);
+		g.setColor(Color.LIGHT_GRAY.brighter());
 		for (int i = 0; i < s.boardSize; i++) {
 			for (int j = 0; j < s.boardSize; j++) {
 				g.fillRect(
@@ -75,6 +77,9 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 	@Override
 	public void generateState(VisualGameState state, int sWidth, int sHeight, Graphics2D g) {
 		boolean board[][][][] = state.getBoard();
+		final Stroke currentStroke = g.getStroke();
+		Stroke newStroke = new BasicStroke(3.0f);
+		g.setStroke(newStroke);
 		final int numPlayers = state.names.length;
 		for (int i = 0; i < state.boardSize; i++) {
 			for (int j = 0; j < state.boardSize; j++) {
@@ -87,6 +92,7 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 				}
 			}
 		}
+		g.setStroke(currentStroke);
 	}
 
 	@Override
