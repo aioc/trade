@@ -136,19 +136,23 @@ public class GameState {
 		
 		final int neighbourhoodRadius = 8;
 		
+		// Same type, different colour
 		final int sameLowA = 1;
-		final double sameLowIntolerenceA = 0.05;
+		final double sameLowIntolerenceA = 0.00;
 		final int sameHighA = 3;
-		final double sameHighIntolerenceA = 0.1;
+		final double sameHighIntolerenceA = 0.8;
+		// Different type, different colour
 		final int differentLowA = 0;
 		final double differentLowIntolerenceA = 0.0;
-		final int differentHighA = 1;
-		final double differentHighIntolerenceA = 0.1;
+		final int differentHighA = 0;
+		final double differentHighIntolerenceA = 0.0;
 		
+		// Same type, same colour
 		final int sameLowC = 0;
 		final double sameLowIntolerenceC = 0.05;
-		final int sameHighC = 1;
-		final double sameHighIntolerenceC = 1.0;
+		final int sameHighC = 0;
+		final double sameHighIntolerenceC = 0.8;
+		// Different type, same colour
 		final int differentLowC = 0;
 		final double differentLowIntolerenceC = 0.05;
 		final int differentHighC = 0;
