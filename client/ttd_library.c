@@ -124,6 +124,7 @@ void makeMove(int r, int c, int d) {
 void makeNoMove(void) {
 	ensureState(STATE_MAKEMOVE, "makeMove");
 	no_move_wanted = TRUE;
+	move_made = TRUE;
 }
 
 ///////////////////////////////////////////////
