@@ -1,5 +1,6 @@
 package games.ttd;
 
+import games.ttd.visualisation.TTDGameEvent;
 import games.ttd.visualisation.VisualGameState;
 
 import java.awt.Color;
