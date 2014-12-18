@@ -97,6 +97,7 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 		} else if (e instanceof TTDLostMoneyEvent) {
 			TTDLostMoneyEvent te = (TTDLostMoneyEvent) e;
 			te.setTotalFrames(TRACKFRAMES);
+		} else if (e instanceof TTDConnectedPairEvent) {
 		} else {
 			TTDGameEvent te = (TTDGameEvent) e;
 			te.setTotalFrames(TRACKFRAMES);
@@ -114,7 +115,32 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 		g.fillRect(textBox.x, textBox.y, textBox.width, textBox.height);
 		drawStatBoxes(g, currentState, textBox);
 		for (int i = 0; i < events.size(); i++) {
-			if (!(events.get(i) instanceof TTDGameEvent)) {
+			if (events.get(i) instanceof TTDConnectedPairEvent) {
+				Consumer c = ((TTDConnectedPairEvent)events.get(i)).consumer;
+				Producer p = ((TTDConnectedPairEvent)events.get(i)).producer;
+				Color playerColour = currentState.colours[((TTDConnectedPairEvent)events.get(i)).player];
+				Color colour = c.getColour().brighter().brighter().brighter().brighter();
+				colour = new Color((colour.getRed() + playerColour.getRed()) / 2,
+								  (colour.getGreen() + playerColour.getGreen()) / 2,
+								  (colour.getBlue() + playerColour.getBlue()) / 2);
+				g.setColor(colour);
+				g.fillRect(
+						boardBox.x + (c.c * sizeRectWidth)  - 5,
+						boardBox.y + (c.r * sizeRectHeight) - 5,
+						sizeRectWidth - borderSquareSize    + 10,
+						sizeRectHeight - borderSquareSize   + 10);
+				colour = p.getColour().darker().darker().darker();
+				colour = new Color((colour.getRed() + playerColour.getRed()) / 2,
+								  (colour.getGreen() + playerColour.getGreen()) / 2,
+								  (colour.getBlue() + playerColour.getBlue()) / 2);
+				g.setColor(colour);
+				g.fillRect(
+						boardBox.x + (p.c * sizeRectWidth)  - 5,
+						boardBox.y + (p.r * sizeRectHeight) - 5,
+						sizeRectWidth - borderSquareSize    + 10,
+						sizeRectHeight - borderSquareSize   + 10);
+				continue;
+			} else if (!(events.get(i) instanceof TTDGameEvent)) {
 				continue;
 			}
 			TTDGameEvent te = (TTDGameEvent) events.get(i);
@@ -227,6 +253,7 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 		} else if (e instanceof TTDLostMoneyEvent) {
 			TTDLostMoneyEvent te = (TTDLostMoneyEvent) e;
 			state.money[te.player] -= te.amountLost;
+		} else if (e instanceof TTDConnectedPairEvent) {
 		} else {
 			TTDGameEvent te = (TTDGameEvent) e;
 			for (Track t : te.tracks) {

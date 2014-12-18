@@ -1,5 +1,6 @@
 package games.ttd;
 
+import games.ttd.visualisation.TTDConnectedPairEvent;
 import games.ttd.visualisation.TTDGainedMoneyEvent;
 import games.ttd.visualisation.TTDGameEvent;
 import games.ttd.visualisation.TTDLostMoneyEvent;
@@ -369,6 +370,7 @@ public class GameState {
 					int amountGained = producers.get(i).payoff * manhattanDist(producers.get(i), path.getL())
 							- path.getR().size();
 					allPlayers[j].money += amountGained;
+					vis.giveEvent(new TTDConnectedPairEvent(producers.get(i), path.getL(), j));
 					vis.giveEvent(new TTDGainedMoneyEvent(amountGained, j));
 					for (GamePerson p : path.getR()) {
 						int player = 0;
