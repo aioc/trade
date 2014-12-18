@@ -145,13 +145,13 @@ public class GameState {
 		final double differentHighIntolerenceA = 0.1;
 		
 		final int sameLowC = 0;
-		final double sameLowIntolerenceC = 0.05;
-		final int sameHighC = 1;
-		final double sameHighIntolerenceC = 1.0;
+		final double sameLowIntolerenceC = 0.0;
+		final int sameHighC = 2;
+		final double sameHighIntolerenceC = 0.5;
 		final int differentLowC = 0;
 		final double differentLowIntolerenceC = 0.0;
-		final int differentHighC = 1;
-		final double differentHighIntolerenceC = 0.5;
+		final int differentHighC = 0;
+		final double differentHighIntolerenceC = 0.3;
 		
 		double jumpChance = 0.0;
 		
