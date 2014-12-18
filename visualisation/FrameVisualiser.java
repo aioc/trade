@@ -28,7 +28,6 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 	
 	@Override
 	public void generateBackground(VisualGameState s, int sWidth, int sHeight, Graphics2D g) {
-		s.initBoard();
 		paintBox = new Rectangle(BORDER_SIZE, BORDER_SIZE, sWidth - (2 * BORDER_SIZE), sHeight
 				- (2 * BORDER_SIZE));
 		sizeBoard = Math.min(paintBox.height - (2 * BORDER_SIZE), (3 * (paintBox.width - (2 * BORDER_SIZE))) / 5);
