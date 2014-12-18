@@ -1,6 +1,5 @@
 package games.ttd;
 
-import games.ttd.visualisation.TTDGameEvent;
 import games.ttd.visualisation.VisualGameState;
 
 import java.awt.Color;
@@ -12,7 +11,6 @@ import java.util.Random;
 
 import core.interfaces.PersistentPlayer;
 import core.visualisation.EventBasedFrameVisualiser;
-import core.visualisation.VisualGameEvent;
 
 public class GameState {
 
