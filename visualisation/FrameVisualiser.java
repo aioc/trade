@@ -6,9 +6,12 @@ import games.ttd.Track;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Stroke;
+import java.awt.geom.Rectangle2D;
 import java.util.List;
 
 import core.visualisation.FrameVisualisationHandler;
@@ -38,7 +41,7 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 			sizeBoard = 0;
 		}
 		int rectWidth = (17 * (paintBox.width - (2 * BORDER_SIZE))) / 20,
-			rectHeight = paintBox.height - (2 * BORDER_SIZE);
+			rectHeight = paintBox.height + BORDER_SIZE;
 		boardBox = new Rectangle(paintBox.x + BORDER_SIZE, paintBox.y + BORDER_SIZE, rectWidth, rectHeight);
 		sizeRectWidth = rectWidth / s.boardSize;
 		sizeRectHeight = rectHeight / s.boardSize;
@@ -106,15 +109,11 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 	public void animateEvents(VisualGameState currentState, List<VisualGameEvent> events, int sWidth, int sHeight, Graphics2D g) {
 		Rectangle textBox = new Rectangle(boardBox.x + boardBox.width + BORDER_SIZE, paintBox.y + BORDER_SIZE,
 				paintBox.width - boardBox.width - 2 * BORDER_SIZE, paintBox.height - BORDER_SIZE);
-		/*Color red = Color.RED.darker();
-		int textRed = (red.getRed() + 255) / 2;
-        int textGreen = (red.getGreen() + 255) / 2;
-        int textBlue = (red.getBlue() + 255) / 2;*/
 		if (statBoxColour == null)
 			statBoxColour = currentState.generateRandomColour(Color.WHITE);
 		g.setColor(statBoxColour);
 		g.fillRect(textBox.x, textBox.y, textBox.width, textBox.height);
-		drawStatBoxes(g, textBox);
+		drawStatBoxes(g, currentState, textBox);
 		for (int i = 0; i < events.size(); i++) {
 			TTDGameEvent te = (TTDGameEvent)events.get(i);
 			for (Track track: te.tracks) {
@@ -148,11 +147,64 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 		}
 	}
 
-	private void drawStatBoxes(Graphics2D g, Rectangle textBox) {
-		// TODO Auto-generated method stub
+	private void drawStatBoxes(Graphics2D g, VisualGameState state, Rectangle textBox) {
+		final int numPlayers = state.names.length;
 		
+		Rectangle topBox = new Rectangle(textBox.x, textBox.y, textBox.width, textBox.height / 12);
+		Rectangle middleBox = new Rectangle(textBox.x, topBox.y + topBox.height, textBox.width,
+				(4 * textBox.height) / 6);
+		Rectangle botBox = new Rectangle(textBox.x, middleBox.y + middleBox.height, textBox.width,
+				(3 * textBox.height) / 12);
+		
+		int squareSize = (int) Math.ceil(Math.sqrt(numPlayers));
+		int squareWidth = middleBox.width;
+		int squareHeight = middleBox.height / squareSize;
+		int strokeSize = (Math.min(squareWidth, squareHeight) / 80) + 1;
+		squareWidth -= 2 * strokeSize;
+		squareHeight -= 2 * strokeSize;
+	
+		
+		for (int i = 0; i < numPlayers; i++) {
+			int x = i;
+			int y = i;
+			Rectangle playerBox = new Rectangle(middleBox.x + strokeSize,
+					middleBox.y + (y * (squareHeight + 2 * strokeSize)) + strokeSize, squareWidth, squareHeight);
+			Color pColour = state.colours[i];
+			Color nameColour = Color.WHITE;
+			Color textColour = Color.WHITE;
+			g.setColor(pColour);
+			g.setStroke(new BasicStroke(strokeSize));
+			g.drawRect(playerBox.x, playerBox.y, playerBox.width, playerBox.height);
+			g.setStroke(new BasicStroke(1));
+			// Write their name so that it's either 24 big, or just fits.
+			Rectangle nameBox = new Rectangle(playerBox.x, playerBox.y, playerBox.width, playerBox.height / 5);
+			Font f = getLargestFittingFont(g.getFont(), nameBox, g, state.names[i], 24);
+			FontMetrics fm = g.getFontMetrics(f);
+			Rectangle2D fR = fm.getStringBounds(state.names[i], g);
+			g.fillRect(nameBox.x, nameBox.y, nameBox.width, nameBox.height);
+			g.setFont(f);
+			g.setColor(nameColour);
+			g.drawString(state.names[i], nameBox.x, (nameBox.y + nameBox.height) - (8 * (int) (nameBox.height - fR.getHeight())) / 10);
+		}
 	}
 
+	private Font getLargestFittingFont(Font f, Rectangle r, Graphics2D g, String s, int largestSize) {
+		int minSize = 1;
+		int maxSize = largestSize;
+		while (minSize < maxSize) {
+			int midSize = (minSize + maxSize + 1) / 2;
+			f = f.deriveFont(Font.PLAIN, midSize);
+			FontMetrics fm = g.getFontMetrics(f);
+			Rectangle2D fR = fm.getStringBounds(s, g);
+			if (fR.getWidth() < r.width && fR.getHeight() < r.height) {
+				minSize = midSize;
+			} else {
+				maxSize = midSize - 1;
+			}
+		}
+		return f.deriveFont(minSize);
+	}
+	
 	@Override
 	public void eventEnded(VisualGameEvent e, VisualGameState state) {
 		TTDGameEvent te = (TTDGameEvent)e;
