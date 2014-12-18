@@ -32,6 +32,7 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 	Rectangle boardBox;
 	Rectangle paintBox;
 	Color statBoxColour = null;
+	Color textColour = null;
 	
 	@Override
 	public void generateBackground(VisualGameState s, int sWidth, int sHeight, Graphics2D g) {
@@ -180,7 +181,9 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 					middleBox.y + (i * (squareHeight + 2 * strokeSize)) + strokeSize, squareWidth, squareHeight);
 			Color pColour = state.colours[i];
 			Color nameColour = Color.WHITE;
-			Color textColour = Color.WHITE;
+			while (textColour == null || state.colourDistance(textColour, statBoxColour) < 200) {
+				textColour = state.generateRandomColour(Color.WHITE);
+			}
 			g.setColor(pColour);
 			g.setStroke(new BasicStroke(strokeSize));
 			g.drawRect(playerBox.x, playerBox.y, playerBox.width, playerBox.height);
@@ -193,7 +196,22 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 			g.fillRect(nameBox.x, nameBox.y, nameBox.width, nameBox.height);
 			g.setFont(f);
 			g.setColor(nameColour);
-			g.drawString(state.names[i], nameBox.x, (nameBox.y + nameBox.height) - (8 * (int) (nameBox.height - fR.getHeight())) / 10);
+			g.drawString(state.names[i], nameBox.x + (nameBox.width - (int)fR.getWidth()) / 2, (nameBox.y + nameBox.height) - (8 * (int) (nameBox.height - fR.getHeight())) / 10);
+			Rectangle playerBoxInterior = new Rectangle(playerBox.x + strokeSize, playerBox.y + strokeSize, playerBox.width - 2*strokeSize, playerBox.height - 2*strokeSize);
+			g.setColor(textColour);
+			String s = "Money: $" + state.money[i];
+			f = getLargestFittingFont(g.getFont(), playerBoxInterior, g, s, 24);
+			g.setFont(f);
+			fm = g.getFontMetrics(f);
+			fR = fm.getStringBounds(s, g);
+			g.drawString(s, playerBoxInterior.x, playerBoxInterior.y + (2 * playerBoxInterior.height) / 5);
+			
+			s = "Tracks bought: " + state.stats[i].tracksBought;
+			f = getLargestFittingFont(g.getFont(), playerBoxInterior, g, s, 24);
+			g.setFont(f);
+			//fm = g.getFontMetrics(f);
+			//fR = fm.getStringBounds(s, g);
+			g.drawString(s, playerBoxInterior.x, playerBoxInterior.y + (2 * playerBoxInterior.height) / 5 + (int)fR.getHeight() + 10);
 		}
 	}
 
