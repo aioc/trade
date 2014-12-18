@@ -19,6 +19,7 @@ import core.visualisation.VisualGameEvent;
 
 public class FrameVisualiser implements FrameVisualisationHandler<VisualGameState> {
 
+	private static final int TRACKFRAMES = 1;
 	private static final int BORDER_SIZE = 10;
 	private static final int SQUARE_BORDER_DIVSOR = 20;
 	// Render-specific helpers
@@ -33,7 +34,6 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 	
 	@Override
 	public void generateBackground(VisualGameState s, int sWidth, int sHeight, Graphics2D programGraphics) {
-		System.out.print("generateBackground");
 		paintBox = new Rectangle(BORDER_SIZE, BORDER_SIZE, sWidth - (2 * BORDER_SIZE), sHeight
 				- (2 * BORDER_SIZE));
 		sizeBoard = Math.min(paintBox.height - (2 * BORDER_SIZE), (3 * (paintBox.width - (2 * BORDER_SIZE))) / 5);
@@ -88,25 +88,27 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 
 	@Override
 	public void eventCreated(VisualGameEvent e) {
+		TTDGameEvent te = (TTDGameEvent)e;
+		te.setTotalFrames(TRACKFRAMES);
 	}
 
 	@Override
 	public void animateEvents(VisualGameState currentState, List<VisualGameEvent> events, int sWidth, int sHeight, Graphics2D g) {
-		System.out.print("akjdshfalskdjhflksdjhflaksdjf");
 		Rectangle textBox = new Rectangle(boardBox.x + boardBox.width + BORDER_SIZE, paintBox.y + BORDER_SIZE,
 				paintBox.width - boardBox.width - 2 * BORDER_SIZE, paintBox.height - 2 * BORDER_SIZE);
 		g.setColor(Color.RED.darker());
 		g.fillRect(textBox.x, textBox.y, textBox.width, textBox.height);
 		drawStatBoxes(g, textBox);
+		System.out.println("got " + events.size() + " events");
 		for (int i = 0; i < events.size(); i++) {
-			g.setColor(currentState.colours[i]);
-			int playerDotW = sizeRectWidth * (i + 1) / (currentState.names.length + 1);
-			int playerDotH = sizeRectHeight * (i + 1) / (currentState.names.length + 1);
+			TTDGameEvent te = (TTDGameEvent)events.get(i);
+			g.setColor(currentState.colours[te.player]);
+			int playerDotW = sizeRectWidth * (te.player + 1) / (currentState.names.length + 1);
+			int playerDotH = sizeRectHeight * (te.player + 1) / (currentState.names.length + 1);
 			// We have numPlayers dots evenly spaced between the TL and BR
 			// of the square. We are going to connect the ith player to the
 			// ith of these dots.
-			TTDGameEvent castedEvent = (TTDGameEvent)events.get(i);
-			for (Track track : castedEvent.tracks) {
+			for (Track track : te.tracks) {
 				if (track.d == 1 || track.d == 3) {
 					// d == 1 should be right, d == 3 should be left
 					g.drawLine(track.c + playerDotW,
@@ -134,7 +136,7 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 
 	@Override
 	public void eventEnded(VisualGameEvent e, VisualGameState state) {
-		// TODO Auto-generated method stub
+		boolean board[][][][] = state.getBoard();
 		
 	}
 
