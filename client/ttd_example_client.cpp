@@ -75,6 +75,8 @@ void clientPlayerMoved(int pid, int moveMade, int r, int c, int d) {
 	if (moveMade) {
 		doesOwn[pid][r][c][d] = TRUE;
 		turnBuilt[pid][r][c][d] = curTurn;
+		// We also mark down the track in the opposite direction
+		turnBuilt[pid][r + dr[d]][c + dc[d]][(d + 2) % 4] = curTurn;
 	}
 }
 
