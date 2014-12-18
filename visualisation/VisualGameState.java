@@ -2,6 +2,7 @@ package games.ttd.visualisation;
 
 import games.ttd.Consumer;
 import games.ttd.Producer;
+import games.ttd.Statistics;
 
 import java.awt.Color;
 import java.util.List;
@@ -14,6 +15,7 @@ public class VisualGameState {
 	public int[] money;
 	public String[] names;
 	public Color[] colours;
+    public Statistics[] stats;
 	
 	private boolean board[][][][];
 	
@@ -21,8 +23,8 @@ public class VisualGameState {
 		this.board = new boolean[boardSize][boardSize][money.length][4];
 		final int numPlayers = colours.length;
 		for (int i = numPlayers - 1; i >= 0; i--) {
+			stats[i] = new Statistics();
 			for (int j = i + 1; j < numPlayers; j++) {
-				System.out.println("Colour distance between " + i + " and " + j + " is " + colourDistance(colours[i], colours[j]));
 				if (colourDistance(colours[i], colours[j]) < 100) {
 					colours[i] = generateRandomColour(Color.WHITE);
 				}
@@ -30,7 +32,7 @@ public class VisualGameState {
 		}
 	}
 	
-	private double colourDistance(Color c1, Color c2) {
+	public double colourDistance(Color c1, Color c2) {
 	    double rmean = (c1.getRed() + c2.getRed()) / 2;
 	    int r = c1.getRed() - c2.getRed();
 	    int g = c1.getGreen() - c2.getGreen();

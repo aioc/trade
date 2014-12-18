@@ -2,6 +2,7 @@ package games.ttd.visualisation;
 
 import games.ttd.Consumer;
 import games.ttd.Producer;
+import games.ttd.Statistics;
 import games.ttd.Track;
 
 import java.awt.BasicStroke;
@@ -101,8 +102,16 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 
 	@Override
 	public void eventCreated(VisualGameEvent e) {
-		TTDGameEvent te = (TTDGameEvent)e;
-		te.setTotalFrames(TRACKFRAMES);
+		if (e instanceof TTDGainedMoneyEvent) {
+			TTDGainedMoneyEvent te = (TTDGainedMoneyEvent)e;
+			te.setTotalFrames(TRACKFRAMES);
+		} else if (e instanceof TTDLostMoneyEvent) {
+			TTDLostMoneyEvent te = (TTDLostMoneyEvent)e;
+			te.setTotalFrames(TRACKFRAMES);
+		} else {
+			TTDGameEvent te = (TTDGameEvent)e;
+			te.setTotalFrames(TRACKFRAMES);
+		}
 	}
 
 	@Override
@@ -115,8 +124,12 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 		g.fillRect(textBox.x, textBox.y, textBox.width, textBox.height);
 		drawStatBoxes(g, currentState, textBox);
 		for (int i = 0; i < events.size(); i++) {
+			if (!(events.get(i) instanceof TTDGameEvent)) {
+				continue;
+			}
 			TTDGameEvent te = (TTDGameEvent)events.get(i);
 			for (Track track: te.tracks) {
+				currentState.stats[te.player].tracksBought++;
 				drawTrack(g, currentState.colours[te.player], track, te.player, currentState.names.length);
 			}
 		}
@@ -153,8 +166,6 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 		Rectangle topBox = new Rectangle(textBox.x, textBox.y, textBox.width, textBox.height / 12);
 		Rectangle middleBox = new Rectangle(textBox.x, topBox.y + topBox.height, textBox.width,
 				(4 * textBox.height) / 6);
-		Rectangle botBox = new Rectangle(textBox.x, middleBox.y + middleBox.height, textBox.width,
-				(3 * textBox.height) / 12);
 		
 		int squareSize = (int) Math.ceil(Math.sqrt(numPlayers));
 		int squareWidth = middleBox.width;
@@ -165,10 +176,8 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 	
 		
 		for (int i = 0; i < numPlayers; i++) {
-			int x = i;
-			int y = i;
 			Rectangle playerBox = new Rectangle(middleBox.x + strokeSize,
-					middleBox.y + (y * (squareHeight + 2 * strokeSize)) + strokeSize, squareWidth, squareHeight);
+					middleBox.y + (i * (squareHeight + 2 * strokeSize)) + strokeSize, squareWidth, squareHeight);
 			Color pColour = state.colours[i];
 			Color nameColour = Color.WHITE;
 			Color textColour = Color.WHITE;
@@ -192,12 +201,12 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 		int minSize = 1;
 		int maxSize = largestSize;
 		while (minSize < maxSize) {
-			int midSize = (minSize + maxSize + 1) / 2;
+			int midSize = (minSize + maxSize) / 2;
 			f = f.deriveFont(Font.PLAIN, midSize);
 			FontMetrics fm = g.getFontMetrics(f);
 			Rectangle2D fR = fm.getStringBounds(s, g);
 			if (fR.getWidth() < r.width && fR.getHeight() < r.height) {
-				minSize = midSize;
+				minSize = midSize + 1;
 			} else {
 				maxSize = midSize - 1;
 			}
@@ -207,10 +216,18 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 	
 	@Override
 	public void eventEnded(VisualGameEvent e, VisualGameState state) {
-		TTDGameEvent te = (TTDGameEvent)e;
-		for (Track t : te.tracks){ 
-			state.trackPlaced(t.r, t.c, te.player, t.d);
-		}		
+		if (e instanceof TTDGainedMoneyEvent) {
+			TTDGainedMoneyEvent te = (TTDGainedMoneyEvent)e;
+			state.money[te.player] += te.amountGained; 
+		} else if (e instanceof TTDLostMoneyEvent) {
+			TTDLostMoneyEvent te = (TTDLostMoneyEvent)e;
+			state.money[te.player] -= te.amountLost;
+		} else {
+			TTDGameEvent te = (TTDGameEvent)e;
+			for (Track t : te.tracks){ 
+				state.trackPlaced(t.r, t.c, te.player, t.d);
+			}
+		}
 	}
 
 }

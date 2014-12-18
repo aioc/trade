@@ -1,6 +1,8 @@
 package games.ttd;
 
+import games.ttd.visualisation.TTDGainedMoneyEvent;
 import games.ttd.visualisation.TTDGameEvent;
+import games.ttd.visualisation.TTDLostMoneyEvent;
 import games.ttd.visualisation.VisualGameState;
 
 import java.awt.Color;
@@ -77,6 +79,7 @@ public class GameState {
 			int green = (((Player) pplayers.get(i)).getColour() >> 8) & 0xFF;
 			int blue = ((Player) pplayers.get(i)).getColour() & 0xFF;
 			s.colours[i] = new Color(red, green, blue);
+			s.stats = new Statistics[allPlayers.length];
 		}
 		s.init();
 	}
@@ -350,6 +353,7 @@ public class GameState {
 				board[t.r()][t.c()][t.getDir()][i] = tick;
 				board[newR][newC][(t.getDir() + 2) % 4][i] = tick;
 				newP.money--;
+				vis.giveEvent(new TTDLostMoneyEvent(1, i));
 			}
 			allPlayers[i] = newP;
 			if (allPlayers[i].lastTurn != Turn.INVALID) {
@@ -362,9 +366,15 @@ public class GameState {
 					continue;
 				Pair<Consumer, List<GamePerson>> path = pathFind(producers.get(i), j);
 				if (path.getL() != null) {
-					allPlayers[j].money += producers.get(i).payoff * manhattanDist(producers.get(i), path.getL())
+					int amountGained = producers.get(i).payoff * manhattanDist(producers.get(i), path.getL())
 							- path.getR().size();
+					allPlayers[j].money += amountGained;
+					vis.giveEvent(new TTDGainedMoneyEvent(amountGained, j));
 					for (GamePerson p : path.getR()) {
+						int player = 0;
+						for (; player < allPlayers.length; player++)
+							if (p == allPlayers[player]) break;
+						vis.giveEvent(new TTDGainedMoneyEvent(1, player));
 						p.money++;
 					}
 					paidOut[i][j] = true;
