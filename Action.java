@@ -15,7 +15,6 @@ public class Action {
        DisconnectedException {
            String inputString;
            inputString = c.getStrInput();
-
            String[] tokens = inputString.split("\\s");
            Action finalA;
            if (tokens.length < 4) {

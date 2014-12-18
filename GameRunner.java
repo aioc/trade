@@ -10,9 +10,9 @@ import java.util.Map;
 import core.interfaces.PersistentPlayer;
 import core.server.ClientConnection;
 import core.server.DisconnectedException;
+import core.visualisation.EndGameEvent;
 import core.visualisation.EventBasedFrameVisualiser;
 import core.visualisation.GameHandler;
-import core.visualisation.EndGameEvent;
 
 public class GameRunner implements GameHandler {
 
@@ -68,7 +68,7 @@ public class GameRunner implements GameHandler {
 		while (results.size() < players.size() - 1 && !state.gameOver()) {
 			for (int i = 0; i < players.size(); i++) {
 				PersistentPlayer p = players.get(i);
-				if (!p.getConnection().isConnected() && isFinished(i)) {
+				if (!p.getConnection().isConnected() || isFinished(i)) {
 					continue;
 				}
 				ClientConnection connection = p.getConnection();
@@ -84,7 +84,7 @@ public class GameRunner implements GameHandler {
 			}
 			for (int i = 0; i < players.size(); i++) {
 				PersistentPlayer p = players.get(i);
-				if (!p.getConnection().isConnected() && isFinished(i)) {
+				if (!p.getConnection().isConnected() || isFinished(i)) {
 					state.setPlayersAction(i, Action.noAction());
 					continue;
 				}
@@ -109,6 +109,7 @@ public class GameRunner implements GameHandler {
 				if (playerDied) {
 					state.killPlayer(i);
 					killPlayers(Arrays.asList(i));
+					state.setPlayersAction(i, Action.noAction());
 				}
 			}
 			state.implementMoves();
@@ -120,11 +121,16 @@ public class GameRunner implements GameHandler {
 				}
 			}
 		}
-		//TODO: Kill players in order of money
-		/*
-		 * The game is over. Check for money, fill in finalRanks and
-		 * results.put(players.get(i), getReward(finalRanks[i] - 1));
-		 */
+		while (results.size() < players.size()) {
+			int minV = -1;
+				for (int i = 0; i < players.size(); i++) {
+					System.out.println(i + " == " + state.getPerson(i).money);
+				if (!isFinished(i) && (minV == -1 || (state.getPerson(i).money < state.getPerson(minV).money))) {
+					minV = i;
+				}
+			}
+			killPlayers(Arrays.asList(minV));
+		}
 		for (int i = 0; i < players.size(); i++) {
 			players.get(i).getConnection().sendInfo("GAMEOVER " + finalRanks[i]);
 			if (finalRanks[i] == 1) {

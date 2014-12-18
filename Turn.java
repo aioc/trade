@@ -1,14 +1,10 @@
 package games.ttd;
 
-public enum Turn {
-	UP(0, 0, -1),
-	RIGHT(1, 1, 0),
-	DOWN(2, 0, 1),
-	LEFT(3, -1, 0),
-	NOP(4, 0, 0),
-	INVALID(-1, -1, -1);
+public class Turn {
 	
-
+	public static final Turn NOP = new Turn(0, 0, 0);
+	public static final Turn INVALID = new Turn(-1, -1, -1);
+	
     public static final int[] dr = {-1, 0, 1, 0};
     public static final int[] dc = {0, 1, 0, -1};
 	
@@ -20,6 +16,7 @@ public enum Turn {
         this.r = r;
         this.c = c;
 	}
+	
 
     public void setSquare(int r, int c) {
         this.r = r;
@@ -35,10 +32,8 @@ public enum Turn {
     }
 	
 	public static Turn findTurn(int dir) {
-		for (Turn m: Turn.values()) {
-			if (m.dir == dir) {
-				return m;
-			}
+		if (0 <= dir && dir < 4) {
+			return new Turn(dir, 0, 0);
 		}
 		return INVALID;
 	}

@@ -33,7 +33,8 @@ public class GameState {
 
 	private EventBasedFrameVisualiser<VisualGameState> vis;
 
-	public GameState(int numPlayers, int boardSize, int numTypes, int numProducers, int numConsumers, int startMoney, List<PersistentPlayer> pplayers) {
+	public GameState(int numPlayers, int boardSize, int numTypes, int numProducers, int numConsumers, int startMoney,
+			List<PersistentPlayer> pplayers) {
 		this.tick = 0;
 		this.numPlayers = numPlayers;
 		this.boardSize = boardSize;
@@ -55,13 +56,13 @@ public class GameState {
 		producers = new ArrayList<Producer>();
 		consumers = new ArrayList<Consumer>();
 		this.pplayers = pplayers;
-		
+
 		nonbigotedGeneration();
 	}
 
 	public void setUpForVisualisation(EventBasedFrameVisualiser<VisualGameState> vis) {
 		this.vis = vis;
-		
+
 		VisualGameState s = vis.getCurState();
 		s.producers = producers;
 		s.consumers = consumers;
@@ -71,10 +72,10 @@ public class GameState {
 		s.names = new String[allPlayers.length];
 		for (int i = 0; i < allPlayers.length; i++) {
 			s.money[i] = allPlayers[i].money;
-			s.names[i] = ((Player)pplayers.get(i)).getName();
-			int red = (((Player)pplayers.get(i)).getColour() >> 16) & 0xFF;
-			int green = (((Player)pplayers.get(i)).getColour() >> 8) & 0xFF;
-			int blue = ((Player)pplayers.get(i)).getColour() & 0xFF;
+			s.names[i] = ((Player) pplayers.get(i)).getName();
+			int red = (((Player) pplayers.get(i)).getColour() >> 16) & 0xFF;
+			int green = (((Player) pplayers.get(i)).getColour() >> 8) & 0xFF;
+			int blue = ((Player) pplayers.get(i)).getColour() & 0xFF;
 			s.colours[i] = new Color(red, green, blue);
 		}
 		s.init();
@@ -92,7 +93,7 @@ public class GameState {
 		final int minPayoff = 10;
 		final int maxPayoff = 15;
 		final int iterations = 100;
-		
+
 		Random rand = new Random();
 		for (int i = 0; i < numProducers; i++) {
 			producers.add(new Producer(0, 0, rand.nextInt(numTypes), rand.nextInt(maxPayoff - minPayoff + 1)
@@ -120,12 +121,14 @@ public class GameState {
 			Collections.shuffle(prodOrder);
 			Collections.shuffle(consOrder);
 			for (int i = 0; i < prodOrder.size(); i++) {
-				producers.set(prodOrder.get(i),
+				producers.set(
+						prodOrder.get(i),
 						(Producer) tryJump(prodOrder.get(i), changeToResourceList(producers),
 								changeToResourceList(consumers)));
 			}
 			for (int i = 0; i < consOrder.size(); i++) {
-				consumers.set(consOrder.get(i),
+				consumers.set(
+						consOrder.get(i),
 						(Consumer) tryJump(consOrder.get(i), changeToResourceList(consumers),
 								changeToResourceList(producers)));
 			}
@@ -133,9 +136,9 @@ public class GameState {
 	}
 
 	private Resource tryJump(int index, List<Resource> mainType, List<Resource> auxType) {
-		
+
 		final int neighbourhoodRadius = 8;
-		
+
 		// Same type, different colour
 		final int sameLowA = 1;
 		final double sameLowIntolerenceA = 0.00;
@@ -146,7 +149,7 @@ public class GameState {
 		final double differentLowIntolerenceA = 0.0;
 		final int differentHighA = 0;
 		final double differentHighIntolerenceA = 0.0;
-		
+
 		// Same type, same colour
 		final int sameLowC = 0;
 		final double sameLowIntolerenceC = 0.05;
@@ -157,9 +160,9 @@ public class GameState {
 		final double differentLowIntolerenceC = 0.05;
 		final int differentHighC = 0;
 		final double differentHighIntolerenceC = 1.00;
-		
+
 		double jumpChance = 0.0;
-		
+
 		int numSameDiffColour = 0;
 		int numSameSameColour = 0;
 		for (int i = 0; i < mainType.size(); i++) {
@@ -184,29 +187,30 @@ public class GameState {
 				}
 			}
 		}
-		//jumpChance += nondifferentIntolerence * Math.max(differentRequirement - numDifferent, 0);
+		// jumpChance += nondifferentIntolerence * Math.max(differentRequirement
+		// - numDifferent, 0);
 		if (numSameSameColour < sameLowC) {
-			jumpChance += sameLowIntolerenceC*(sameLowC-numSameSameColour);
+			jumpChance += sameLowIntolerenceC * (sameLowC - numSameSameColour);
 		} else if (numSameSameColour > sameHighC) {
-			jumpChance += sameHighIntolerenceC*(numSameSameColour-sameHighC);
+			jumpChance += sameHighIntolerenceC * (numSameSameColour - sameHighC);
 		}
 		if (numSameDiffColour < sameLowA) {
-			jumpChance += sameLowIntolerenceA*(sameLowA-numSameDiffColour);
+			jumpChance += sameLowIntolerenceA * (sameLowA - numSameDiffColour);
 		} else if (numSameDiffColour > sameHighA) {
-			jumpChance += sameHighIntolerenceA*(numSameDiffColour-sameHighA);
+			jumpChance += sameHighIntolerenceA * (numSameDiffColour - sameHighA);
 		}
-		
+
 		if (numDifferentSameColour < differentLowC) {
-			jumpChance += differentLowIntolerenceC*(differentLowC-numDifferentSameColour);
+			jumpChance += differentLowIntolerenceC * (differentLowC - numDifferentSameColour);
 		} else if (numDifferentSameColour > differentHighC) {
-			jumpChance += differentHighIntolerenceC*(numDifferentSameColour-differentHighC);
+			jumpChance += differentHighIntolerenceC * (numDifferentSameColour - differentHighC);
 		}
 		if (numDifferentDiffColour < differentLowA) {
-			jumpChance += differentLowIntolerenceA*(differentLowA-numDifferentDiffColour);
+			jumpChance += differentLowIntolerenceA * (differentLowA - numDifferentDiffColour);
 		} else if (numDifferentDiffColour > differentHighA) {
-			jumpChance += differentHighIntolerenceA*(numDifferentDiffColour-differentLowA);
+			jumpChance += differentHighIntolerenceA * (numDifferentDiffColour - differentLowA);
 		}
-		
+
 		Random rand = new Random();
 		if (rand.nextDouble() < jumpChance) {
 			return doJump(mainType.get(index));
@@ -360,11 +364,6 @@ public class GameState {
 				if (path.getL() != null) {
 					allPlayers[j].money += producers.get(i).payoff * manhattanDist(producers.get(i), path.getL())
 							- path.getR().size();
-					System.out.println("Paid out "
-							+ j
-							+ " "
-							+ (producers.get(i).payoff * manhattanDist(producers.get(i), path.getL()) - path.getR()
-									.size()));
 					for (GamePerson p : path.getR()) {
 						p.money++;
 					}
@@ -374,14 +373,14 @@ public class GameState {
 		}
 		for (Integer i : killStart) {
 			allPlayers[i].money = -9001;
-			//TODO: Send event
+			// TODO: Send event
 		}
 		for (int i = 0; i < numPlayers; i++) {
 			allPlayers[i].preAction = allPlayers[i].action;
 			allPlayers[i].action = Action.noAction();
 		}
 	}
-	
+
 	public boolean gameOver() {
 		// The game is over if:
 		// There are no players with > 0 money, or
@@ -394,7 +393,8 @@ public class GameState {
 				haveMoney++;
 			}
 		}
-		if (haveMoney <= 1) return true;
+		if (haveMoney <= 1)
+			return true;
 		boolean noProd = true;
 		for (int i = 0; i < numProducers && noProd; i++) {
 			for (int j = 0; j < numPlayers; j++) {
@@ -403,14 +403,16 @@ public class GameState {
 				}
 			}
 		}
-		if (noProd) return true;
+		if (noProd)
+			return true;
 		boolean allNull = tick > 1;
 		for (int i = 0; i < numPlayers && allNull; i++) {
 			if (allPlayers[i].lastTurn != Turn.NOP) {
 				allNull = false;
 			}
 		}
-		if (allNull) return true;
+		if (allNull)
+			return true;
 		return false;
 	}
 
