@@ -41,7 +41,7 @@ public class VisualGameState {
 	    return Math.sqrt(weightR*r*r + weightG*g*g + weightB*b*b);
 	} 
 	
-	private Color generateRandomColour(Color mixer) {
+	public Color generateRandomColour(Color mixer) {
 	    Random random = new Random();
 	    int red = random.nextInt(256);
 	    int green = random.nextInt(256);

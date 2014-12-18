@@ -27,6 +27,7 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 	private int borderSquareSize;
 	Rectangle boardBox;
 	Rectangle paintBox;
+	Color statBoxColour = null;
 	
 	@Override
 	public void generateBackground(VisualGameState s, int sWidth, int sHeight, Graphics2D g) {
@@ -105,7 +106,13 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 	public void animateEvents(VisualGameState currentState, List<VisualGameEvent> events, int sWidth, int sHeight, Graphics2D g) {
 		Rectangle textBox = new Rectangle(boardBox.x + boardBox.width + BORDER_SIZE, paintBox.y + BORDER_SIZE,
 				paintBox.width - boardBox.width - 2 * BORDER_SIZE, paintBox.height - 2 * BORDER_SIZE);
-		g.setColor(Color.RED.darker());
+		/*Color red = Color.RED.darker();
+		int textRed = (red.getRed() + 255) / 2;
+        int textGreen = (red.getGreen() + 255) / 2;
+        int textBlue = (red.getBlue() + 255) / 2;*/
+		if (statBoxColour == null)
+			statBoxColour = currentState.generateRandomColour(Color.WHITE);
+		g.setColor(statBoxColour);
 		g.fillRect(textBox.x, textBox.y, textBox.width, textBox.height);
 		drawStatBoxes(g, textBox);
 		System.out.println("got " + events.size() + " events");
