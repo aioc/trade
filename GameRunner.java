@@ -128,7 +128,6 @@ public class GameRunner implements GameHandler {
 			int minV = -1;
 			List<Integer> curMin = null;
 			for (int i = 0; i < players.size(); i++) {
-				System.out.println(i + " == " + state.getPerson(i).money);
 				if (!isFinished(i) && (minV == -1 || (state.getPerson(i).money < state.getPerson(minV).money))) {
 					minV = i;
 					curMin = new ArrayList<Integer>();
