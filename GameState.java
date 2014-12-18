@@ -77,7 +77,7 @@ public class GameState {
 			int blue = ((Player)pplayers.get(i)).getColour() & 0xFF;
 			s.colours[i] = new Color(red, green, blue);
 		}
-		s.initBoard();
+		s.init();
 	}
 
 	private List<Resource> changeToResourceList(List<? extends Resource> l) {
