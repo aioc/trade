@@ -19,7 +19,6 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 	private static final int BORDER_SIZE = 10;
 	private static final int SQUARE_BORDER_DIVSOR = 20;
 	// Render-specific helpers
-	BufferedImage prerenderedBackground;
 	private int sizeBoard;
 	private int sizeSquare;
 	private int sizeRectWidth;
@@ -29,7 +28,8 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 	Rectangle paintBox;
 	
 	@Override
-	public void generateBackground(VisualGameState s, int sWidth, int sHeight, Graphics2D programGraphics) {
+	public void generateBackground(VisualGameState s, int sWidth, int sHeight, Graphics2D g) {
+		s.initBoard();
 		paintBox = new Rectangle(BORDER_SIZE, BORDER_SIZE, sWidth - (2 * BORDER_SIZE), sHeight
 				- (2 * BORDER_SIZE));
 		sizeBoard = Math.min(paintBox.height - (2 * BORDER_SIZE), (3 * (paintBox.width - (2 * BORDER_SIZE))) / 5);
@@ -44,8 +44,6 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 		sizeSquare = sizeBoard / s.boardSize;
 		borderSquareSize = (sizeSquare / SQUARE_BORDER_DIVSOR) + 1;
 		// Draw background
-		prerenderedBackground = new BufferedImage(sWidth, sHeight, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g = (Graphics2D) prerenderedBackground.getGraphics();
 		g.setColor(Color.BLACK);
 		g.fillRect(paintBox.x, paintBox.y, paintBox.width, paintBox.height);
 		g.setColor(Color.WHITE);
@@ -74,12 +72,23 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 					sizeRectWidth - borderSquareSize,
 					sizeRectHeight - borderSquareSize);
 		}
-		programGraphics.drawImage(prerenderedBackground, 0, 0, null);
 	}
 
 	@Override
 	public void generateState(VisualGameState state, int sWidth, int sHeight, Graphics2D g) {
-		state.initBoard();
+		boolean board[][][][] = state.getBoard();
+		final int numPlayers = state.names.length;
+		for (int i = 0; i < state.boardSize; i++) {
+			for (int j = 0; j < state.boardSize; j++) {
+				for (int k = 0; k < numPlayers; k++) {
+					for (int l = 0; l < 4; l++) {
+						if (board[i][j][k][l]) {
+							drawTrack(g, state.colours[k], new Track(i, j, -1, l), k, numPlayers);
+						}
+					}
+				}
+			}
+		}
 	}
 
 	@Override
@@ -98,31 +107,35 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 		System.out.println("got " + events.size() + " events");
 		for (int i = 0; i < events.size(); i++) {
 			TTDGameEvent te = (TTDGameEvent)events.get(i);
-			g.setColor(currentState.colours[te.player]);
-			int playerDotW = sizeRectWidth * (te.player + 1) / (currentState.names.length + 1);
-			int playerDotH = sizeRectHeight * (te.player + 1) / (currentState.names.length + 1);
-			// We have numPlayers dots evenly spaced between the TL and BR
-			// of the square. We are going to connect the ith player to the
-			// ith of these dots.
-			for (Track track : te.tracks) {
-				if (track.d == 1 || track.d == 3) {
-					// d == 1 should be right, d == 3 should be left
-					g.drawLine(track.c + playerDotW,
-								track.r + playerDotH,
-								track.c + playerDotW - (sizeRectWidth*(track.d - 2)),
-								track.r + playerDotH
-							);
-				} else {
-					// d == 0 should be up, d == 2 should be down.
-					g.drawLine(track.c + playerDotW,
-								track.r + playerDotH,
-								track.c + playerDotW,
-								track.r + playerDotH - (sizeRectHeight*(track.d - 1))
-							);
-				}
+			for (Track track: te.tracks) {
+				drawTrack(g, currentState.colours[te.player], track, te.player, currentState.names.length);
 			}
 		}
 		
+	}
+	
+	private void drawTrack(Graphics2D g, Color colour, Track track, int pid, int numPlayers) {
+		g.setColor(colour);
+		int playerDotW = sizeRectWidth * (pid + 1) / (numPlayers + 1);
+		int playerDotH = sizeRectHeight * (pid + 1) / (numPlayers + 1);
+		// We have numPlayers dots evenly spaced between the TL and BR
+		// of the square. We are going to connect the ith player to the
+		// ith of these dots.
+		if (track.d == 1 || track.d == 3) {
+			// d == 1 should be right, d == 3 should be left
+			g.drawLine(boardBox.x + track.c*sizeRectWidth + playerDotW,
+						boardBox.y + track.r*sizeRectHeight + playerDotH,
+						boardBox.x + track.c*sizeRectWidth + playerDotW - (sizeRectWidth*(track.d - 2)),
+						boardBox.y + track.r*sizeRectHeight + playerDotH
+					);
+		} else {
+			// d == 0 should be up, d == 2 should be down.
+			g.drawLine(boardBox.x + track.c*sizeRectWidth + playerDotW,
+						boardBox.y + track.r*sizeRectHeight + playerDotH,
+						boardBox.x + track.c*sizeRectWidth + playerDotW,
+						boardBox.y + track.r*sizeRectHeight + playerDotH - (sizeRectHeight*(track.d - 1))
+					);
+		}
 	}
 
 	private void drawStatBoxes(Graphics2D g, Rectangle textBox) {
@@ -132,8 +145,10 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 
 	@Override
 	public void eventEnded(VisualGameEvent e, VisualGameState state) {
-		boolean board[][][][] = state.getBoard();
-		
+		TTDGameEvent te = (TTDGameEvent)e;
+		for (Track t : te.tracks){ 
+			state.trackPlaced(t.r, t.c, te.player, t.d);
+		}		
 	}
 
 }

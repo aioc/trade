@@ -23,4 +23,8 @@ public class VisualGameState {
 	public boolean[][][][] getBoard() {
 		return board;
 	}
+	
+	public void trackPlaced(int r, int c, int pid, int d) {
+		board[r][c][pid][d] = true;
+	}
 }
