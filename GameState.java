@@ -282,8 +282,11 @@ public class GameState {
 
 		while (pq.size() > 0) {
 			DijkstraState cur = pq.remove();
-			while (seen[cur.r][cur.c]) {
+			while (seen[cur.r][cur.c] && pq.size() > 0) {
 				cur = pq.remove();
+			}
+			if (seen[cur.r][cur.c]) {
+				break;
 			}
 			seen[cur.r][cur.c] = true;
 			for (int k = 0; k < 4; k++) {
@@ -291,14 +294,15 @@ public class GameState {
 					int newR = cur.r + Turn.dr[k];
 					int newC = cur.c + Turn.dc[k];
 					// Do we add stuff on?
+					if (board[cur.r][cur.c][k][player] == 0) continue;
 					List<GamePerson> newOwners = new ArrayList<>();
 					int bestTurn = board[cur.r][cur.c][k][player] - 1;
 					for (int i = 0; i < numPlayers; i++) {
-						if (board[cur.r][cur.c][k][i] < bestTurn) {
+						if (board[cur.r][cur.c][k][i] < bestTurn && board[cur.r][cur.c][k][i] > 0) {
 							newOwners = new ArrayList<>();
 							newOwners.add(allPlayers[i]);
 							bestTurn = board[cur.r][cur.c][k][i];
-						} else if (board[cur.r][cur.c][k][i] == bestTurn) {
+						} else if (board[cur.r][cur.c][k][i] == bestTurn && board[cur.r][cur.c][k][i] > 0) {
 							newOwners.add(allPlayers[i]);
 						}
 					}

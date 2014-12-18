@@ -2,7 +2,7 @@ package games.ttd;
 
 public class Turn {
 	
-	public static final Turn NOP = new Turn(0, 0, 0);
+	public static final Turn NOP = new Turn(4, 0, 0);
 	public static final Turn INVALID = new Turn(-1, -1, -1);
 	
     public static final int[] dr = {-1, 0, 1, 0};
@@ -59,6 +59,9 @@ public class Turn {
 	}
 
     public String toString() {
+    	if (this == NOP) {
+    		return "";
+    	}
         return r + " " + c + " " + dir;
     }
 
