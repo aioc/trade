@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <cstdlib>
+#include <ctime>
 #include "ttd.h"
 
 int dr[] = {-1, 0, 1, 0};
@@ -34,8 +35,9 @@ int curTurn;
 int haveTarget;
 
 void clientRegister(void) {
-	setName("dah-simple");
-	setColour(255, 128, 0);
+	setName("dah-stupid");
+	srand(time(NULL));
+	setColour(128, 0, 128);
 }
 
 void clientInit(int numPlayers, int boardSize, int numResourceTypes, int startMoney, int pid) {
@@ -128,29 +130,36 @@ int calcPlace(int *r, int *c, int *d) {
 	return 0;
 }
 
+
+int invalidT(int pId, int cId) {
+	// Check same type
+	if (allProducers[pId].type != allConsumers[cId].type) {
+		return FALSE;
+	}
+	if (haveConnected[pId]) {
+		return FALSE;
+	}
+	if (manDis(allProducers[pId], allConsumers[cId]) > curMoney[myId]) {
+		return FALSE;
+	}
+	return TRUE;
+}
+
 int aquireTarget(void) {
-	int i, j;
-	int bestMoney = -1;
-	for (i = 0; i < numProd; i++) {
-		if (haveConnected[i]) continue;
-		for (j = 0; j < numCons; j++) {
-			if (allProducers[i].type != allConsumers[j].type) continue;
-			int dis = manDis(allProducers[i], allConsumers[j]);
-			if (dis <= curMoney[myId]) {
-				int gain = dis * allProducers[i].value;
-				if (gain > bestMoney) {
-					bestMoney = gain;
-					place = 0;
-					targetFrom = allProducers[i];
-					targetTo = allConsumers[j];
-				}
-			}
-		}
+	int pId = rand() % numProd;
+	int cId = rand() % numCons;
+	int count = 0;
+	while (invalidT(pId, cId) && count < 1000) {
+		pId = rand() % numProd;
+		cId = rand() % numCons;
+		count++;
 	}
-	if (bestMoney != -1) {
-		haveTarget = TRUE;
-	}
-	return bestMoney != -1;
+	if (count == 1000) return FALSE;
+	place = 0;
+	targetFrom = allProducers[pId];
+	targetTo = allConsumers[cId];
+	haveTarget = TRUE;
+	return TRUE;
 }
 
 void finishedConnect(struct producer_info p) {

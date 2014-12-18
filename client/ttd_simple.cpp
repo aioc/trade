@@ -34,7 +34,7 @@ int curTurn;
 int haveTarget;
 
 void clientRegister(void) {
-	setName("dah-terminator");
+	setName("dah-simple");
 	setColour(255, 128, 0);
 }
 
