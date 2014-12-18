@@ -93,8 +93,11 @@ struct producer_info targetFrom;
 struct consumer_info targetTo;
 int place;
 
-void calcPlace(int *r, int *c, int *d) {
+int calcPlace(int *r, int *c, int *d) {
 	int disR = absV(targetFrom.r - targetTo.r);
+	if (place == manDis(targetFrom, targetTo)) {
+		return 1;
+	}
 	if (place < disR) {
 		if (targetFrom.r < targetTo.r) {
 			*r = targetFrom.r + place;
@@ -115,6 +118,10 @@ void calcPlace(int *r, int *c, int *d) {
 		*r = targetTo.r;
 	}
 	place++;
+	if (doesOwn[myId][*r][*c][*d]) {
+		return calcPlace(r, c, d);
+	}
+	return 0;
 }
 
 int aquireTarget(void) {
@@ -135,6 +142,9 @@ int aquireTarget(void) {
 				}
 			}
 		}
+	}
+	if (bestMoney != -1) {
+		haveTarget = TRUE;
 	}
 	return bestMoney != -1;
 }
@@ -157,16 +167,14 @@ void clientDoTurn(void) {
 		}
 	}
 	if (shouldMove) {
-		calcPlace(&r, &c, &d);
-		while (doesOwn[myId][r][c][d] && shouldMove) {
-			if (place == manDis(targetFrom, targetTo)) {
-				finishedConnect(targetFrom);
-				if (!aquireTarget()) {
-					shouldMove = FALSE;
-					break;
-				}
+		int finished = calcPlace(&r, &c, &d);
+		while (finished) {
+			finishedConnect(targetFrom);
+			if (!aquireTarget()) {
+				shouldMove = FALSE;
+				break;
 			}
-			calcPlace(&r, &c, &d);
+			finished = calcPlace(&r, &c, &d);
 		}
 	}
 	if (shouldMove) {
