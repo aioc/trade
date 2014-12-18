@@ -105,7 +105,7 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 	@Override
 	public void animateEvents(VisualGameState currentState, List<VisualGameEvent> events, int sWidth, int sHeight, Graphics2D g) {
 		Rectangle textBox = new Rectangle(boardBox.x + boardBox.width + BORDER_SIZE, paintBox.y + BORDER_SIZE,
-				paintBox.width - boardBox.width - 2 * BORDER_SIZE, paintBox.height - 2 * BORDER_SIZE);
+				paintBox.width - boardBox.width - 2 * BORDER_SIZE, paintBox.height - BORDER_SIZE);
 		/*Color red = Color.RED.darker();
 		int textRed = (red.getRed() + 255) / 2;
         int textGreen = (red.getGreen() + 255) / 2;
