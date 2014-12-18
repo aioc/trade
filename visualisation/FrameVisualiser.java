@@ -33,6 +33,8 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 	Color statBoxColour = null;
 	Color textColour = null;
 
+	Color winnerColor = null;
+
 	@Override
 	public void generateBackground(VisualGameState s, int sWidth, int sHeight, Graphics2D g) {
 		paintBox = new Rectangle(BORDER_SIZE, BORDER_SIZE, sWidth - (2 * BORDER_SIZE), sHeight - (2 * BORDER_SIZE));
@@ -86,6 +88,9 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 				}
 			}
 		}
+		if (state.winner != null) {
+			drawWinnerBox(g, state, sWidth, sHeight, state.winner);
+		}
 		g.setStroke(currentStroke);
 	}
 
@@ -97,7 +102,8 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 		} else if (e instanceof TTDLostMoneyEvent) {
 			TTDLostMoneyEvent te = (TTDLostMoneyEvent) e;
 			te.setTotalFrames(TRACKFRAMES);
-		} else if (e instanceof TTDConnectedPairEvent) {
+		} else if (e instanceof TTDConnectedPairEvent) {} else if (e instanceof TTDWinnerEvent) {
+			((TTDWinnerEvent) e).totalFrames = 60;
 		} else {
 			TTDGameEvent te = (TTDGameEvent) e;
 			te.setTotalFrames(TRACKFRAMES);
@@ -116,29 +122,26 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 		drawStatBoxes(g, currentState, textBox);
 		for (int i = 0; i < events.size(); i++) {
 			if (events.get(i) instanceof TTDConnectedPairEvent) {
-				Consumer c = ((TTDConnectedPairEvent)events.get(i)).consumer;
-				Producer p = ((TTDConnectedPairEvent)events.get(i)).producer;
-				Color playerColour = currentState.colours[((TTDConnectedPairEvent)events.get(i)).player];
+				Consumer c = ((TTDConnectedPairEvent) events.get(i)).consumer;
+				Producer p = ((TTDConnectedPairEvent) events.get(i)).producer;
+				Color playerColour = currentState.colours[((TTDConnectedPairEvent) events.get(i)).player];
 				Color colour = c.getColour().brighter().brighter().brighter().brighter();
 				colour = new Color((colour.getRed() + playerColour.getRed()) / 2,
-								  (colour.getGreen() + playerColour.getGreen()) / 2,
-								  (colour.getBlue() + playerColour.getBlue()) / 2);
+						(colour.getGreen() + playerColour.getGreen()) / 2,
+						(colour.getBlue() + playerColour.getBlue()) / 2);
 				g.setColor(colour);
-				g.fillRect(
-						boardBox.x + (c.c * sizeRectWidth)  - 5,
-						boardBox.y + (c.r * sizeRectHeight) - 5,
-						sizeRectWidth - borderSquareSize    + 10,
-						sizeRectHeight - borderSquareSize   + 10);
+				g.fillRect(boardBox.x + (c.c * sizeRectWidth) - 5, boardBox.y + (c.r * sizeRectHeight) - 5,
+						sizeRectWidth - borderSquareSize + 10, sizeRectHeight - borderSquareSize + 10);
 				colour = p.getColour().darker().darker().darker();
 				colour = new Color((colour.getRed() + playerColour.getRed()) / 2,
-								  (colour.getGreen() + playerColour.getGreen()) / 2,
-								  (colour.getBlue() + playerColour.getBlue()) / 2);
+						(colour.getGreen() + playerColour.getGreen()) / 2,
+						(colour.getBlue() + playerColour.getBlue()) / 2);
 				g.setColor(colour);
-				g.fillRect(
-						boardBox.x + (p.c * sizeRectWidth)  - 5,
-						boardBox.y + (p.r * sizeRectHeight) - 5,
-						sizeRectWidth - borderSquareSize    + 10,
-						sizeRectHeight - borderSquareSize   + 10);
+				g.fillRect(boardBox.x + (p.c * sizeRectWidth) - 5, boardBox.y + (p.r * sizeRectHeight) - 5,
+						sizeRectWidth - borderSquareSize + 10, sizeRectHeight - borderSquareSize + 10);
+				continue;
+			} else if (events.get(i) instanceof TTDWinnerEvent) {
+				drawWinnerBox(g, currentState, sWidth, sHeight, ((TTDWinnerEvent) events.get(i)).playerName);
 				continue;
 			} else if (!(events.get(i) instanceof TTDGameEvent)) {
 				continue;
@@ -228,6 +231,40 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 		}
 	}
 
+	private void drawWinnerBox(Graphics2D g, VisualGameState state, int sWidth, int sHeight, String winner) {
+		String text = "";
+		if (winner.equals("")) {
+			text = "The game was a draw";
+		} else {
+			text = winner + " was the winner!";
+		}
+		Color c = Color.BLACK;
+		for (int i = 0; i < state.names.length; i++) {
+			if (state.names[i].equals(winner)) {
+				c = state.colours[i];
+			}
+		}
+		Rectangle winnerRect = new Rectangle(boardBox.x + boardBox.width / 4, boardBox.y + boardBox.height / 3,
+				boardBox.width / 2, boardBox.height / 3);
+		g.setColor(c);
+		g.fillRect(winnerRect.x, winnerRect.y, winnerRect.width, winnerRect.height);
+
+		while (winnerColor == null || state.colourDistance(c, winnerColor) < 200) {
+			winnerColor = state.generateRandomColour(Color.WHITE);
+		}
+		Rectangle nameBox = new Rectangle(winnerRect.x + (winnerRect.width / 10), winnerRect.y
+				+ (winnerRect.height / 10), (winnerRect.width * 4) / 5, (winnerRect.height * 4) / 5);
+		Font f = getLargestFittingFont(g.getFont(), nameBox, g, text, 180);
+		g.setStroke(new BasicStroke(1));
+		FontMetrics fm = g.getFontMetrics(f);
+		Rectangle2D fR = fm.getStringBounds(text, g);
+		g.setFont(f);
+		g.setColor(winnerColor);
+		g.drawString(text, nameBox.x + (nameBox.width - (int) fR.getWidth()) / 2, nameBox.y
+				+ (nameBox.height - (int) fR.getHeight() + fm.getHeight()) / 2);
+
+	}
+
 	private Font getLargestFittingFont(Font f, Rectangle r, Graphics2D g, String s, int largestSize) {
 		int minSize = 1;
 		int maxSize = largestSize;
@@ -253,7 +290,8 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 		} else if (e instanceof TTDLostMoneyEvent) {
 			TTDLostMoneyEvent te = (TTDLostMoneyEvent) e;
 			state.money[te.player] -= te.amountLost;
-		} else if (e instanceof TTDConnectedPairEvent) {
+		} else if (e instanceof TTDConnectedPairEvent) {} else if (e instanceof TTDWinnerEvent) {
+			state.winner = ((TTDWinnerEvent) e).playerName;
 		} else {
 			TTDGameEvent te = (TTDGameEvent) e;
 			for (Track t : te.tracks) {

@@ -82,7 +82,6 @@ public class Player implements PersistentPlayer {
 		} else {
 			name += new Random().nextInt(1000);
 		}
-		System.out.println (name.hashCode());
         // fix this for BABMODE
 		//if (name.hashCode() == 1658738906) {
 		//	connection = new MINARWIN();

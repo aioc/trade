@@ -16,6 +16,7 @@ public class VisualGameState {
 	public String[] names;
 	public Color[] colours;
     public Statistics[] stats;
+    public String winner;
 	
 	private boolean board[][][][];
 	

@@ -82,6 +82,7 @@ public class GameState {
 			s.colours[i] = new Color(red, green, blue);
 			s.stats = new Statistics[allPlayers.length];
 		}
+		s.winner = null;
 		s.init();
 	}
 
@@ -94,8 +95,8 @@ public class GameState {
 	}
 
 	private void nonbigotedGeneration() {
-		final int minPayoff = 10;
-		final int maxPayoff = 15;
+		final int minPayoff = 2;
+		final int maxPayoff = 5;
 		final int iterations = 100;
 
 		Random rand = new Random();

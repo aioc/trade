@@ -1,5 +1,6 @@
 package games.ttd;
 
+import games.ttd.visualisation.TTDWinnerEvent;
 import games.ttd.visualisation.VisualGameState;
 
 import java.util.ArrayList;
@@ -138,12 +139,20 @@ public class GameRunner implements GameHandler {
 			}
 			killPlayers(curMin);
 		}
+		int amoWinners = 0;
+		String name = "";
 		for (int i = 0; i < players.size(); i++) {
 			players.get(i).getConnection().sendInfo("GAMEOVER " + finalRanks[i]);
 			if (finalRanks[i] == 1) {
+				amoWinners++;
+				name = players.get(i).getName();
 				// state.setWinner(i);
 			}
 		}
+		if (amoWinners > 1) {
+			name = "";
+		}
+		vis.giveEvent(new TTDWinnerEvent(name));
 		vis.giveEvent(new EndGameEvent());
 		while (!vis.finishedVisualising() && vis.isVisualising()) {
 			try {
