@@ -330,7 +330,7 @@ public class GameState {
 		// First of all, apply all moves.
 		for (int i = 0; i < numPlayers; i++) {
 			GamePerson newP = allPlayers[i].action.getMove().applyToPlayer(allPlayers[i], tick);
-			System.out.println(i + " did " + newP.lastTurn.toString());
+			//System.out.println(i + " did " + newP.lastTurn.toString());
 			if (newP.lastTurn == Turn.NOP) {
 				allPlayers[i] = newP;
 				continue;
@@ -348,7 +348,9 @@ public class GameState {
 				newP.money--;
 			}
 			allPlayers[i] = newP;
-			vis.giveEvent(new TTDGameEvent(newP.lastTurn, i));
+			if (allPlayers[i].lastTurn != Turn.INVALID) {
+				vis.giveEvent(new TTDGameEvent(newP.lastTurn, i));
+			}
 		}
 		for (int i = 0; i < numProducers; i++) {
 			for (int j = 0; j < numPlayers; j++) {

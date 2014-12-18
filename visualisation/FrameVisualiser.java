@@ -7,7 +7,6 @@ import games.ttd.Track;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 import java.util.List;
 
 import core.visualisation.FrameVisualisationHandler;
@@ -133,7 +132,7 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 			g.drawLine(boardBox.x + track.c*sizeRectWidth + playerDotW,
 						boardBox.y + track.r*sizeRectHeight + playerDotH,
 						boardBox.x + track.c*sizeRectWidth + playerDotW,
-						boardBox.y + track.r*sizeRectHeight + playerDotH - (sizeRectHeight*(track.d - 1))
+						boardBox.y + track.r*sizeRectHeight + playerDotH + (sizeRectHeight*(track.d - 1))
 					);
 		}
 	}
