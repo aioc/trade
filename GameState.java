@@ -347,7 +347,7 @@ public class GameState {
 				newP.money--;
 			}
 			allPlayers[i] = newP;
-			//vis.giveEvent(new TTDGameEvent(newP.lastTurn, i));
+			vis.giveEvent(new TTDGameEvent(newP.lastTurn, i));
 		}
 		for (int i = 0; i < numProducers; i++) {
 			for (int j = 0; j < numPlayers; j++) {

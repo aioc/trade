@@ -12,6 +12,7 @@ import core.server.ClientConnection;
 import core.server.DisconnectedException;
 import core.visualisation.EventBasedFrameVisualiser;
 import core.visualisation.GameHandler;
+import core.visualisation.EndGameEvent;
 
 public class GameRunner implements GameHandler {
 
@@ -128,6 +129,7 @@ public class GameRunner implements GameHandler {
 				// state.setWinner(i);
 			}
 		}
+		vis.giveEvent(new EndGameEvent());
 		while (!vis.finishedVisualising() && vis.isVisualising()) {
 			try {
 				Thread.sleep(100);
