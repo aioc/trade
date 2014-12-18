@@ -1,5 +1,6 @@
 package games.ttd;
 
+import games.ttd.visualisation.TTDGameEvent;
 import games.ttd.visualisation.VisualGameState;
 
 import java.awt.Color;
@@ -145,13 +146,13 @@ public class GameState {
 		final double differentHighIntolerenceA = 0.1;
 		
 		final int sameLowC = 0;
-		final double sameLowIntolerenceC = 0.0;
-		final int sameHighC = 2;
-		final double sameHighIntolerenceC = 0.5;
+		final double sameLowIntolerenceC = 0.05;
+		final int sameHighC = 1;
+		final double sameHighIntolerenceC = 1.0;
 		final int differentLowC = 0;
-		final double differentLowIntolerenceC = 0.0;
+		final double differentLowIntolerenceC = 0.05;
 		final int differentHighC = 0;
-		final double differentHighIntolerenceC = 0.3;
+		final double differentHighIntolerenceC = 1.00;
 		
 		double jumpChance = 0.0;
 		
@@ -344,6 +345,7 @@ public class GameState {
 				newP.money--;
 			}
 			allPlayers[i] = newP;
+			//vis.giveEvent(new TTDGameEvent(newP.lastTurn, i));
 		}
 		for (int i = 0; i < numProducers; i++) {
 			for (int j = 0; j < numPlayers; j++) {
