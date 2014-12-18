@@ -14,11 +14,11 @@ import core.visualisation.EventBasedFrameVisualiser;
 
 public class GameFactory implements GameBuilder {
 
-	public int boardSize = 50;
-	public int numTypes = 5;
-	public int numProducers = 15;
-	public int numConsumers = 45;
-	public int initialMoney = 20;
+    public int boardSize = 50;
+    public int numTypes = 5;
+    public int numProducers = 25;
+    public int numConsumers = 65;
+    public int initialMoney = 20;
 
 	@Override
 	public GameInstance createGameInstance(List<PersistentPlayer> players) {

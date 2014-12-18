@@ -135,23 +135,23 @@ public class GameState {
 		
 		final int neighbourhoodRadius = 8;
 		
-		final int sameLowA = 3;
+		final int sameLowA = 1;
 		final double sameLowIntolerenceA = 0.05;
-		final int sameHighA = 5;
-		final double sameHighIntolerenceA = 0.05;
+		final int sameHighA = 3;
+		final double sameHighIntolerenceA = 0.1;
 		final int differentLowA = 0;
 		final double differentLowIntolerenceA = 0.0;
-		final int differentHighA = 0;
-		final double differentHighIntolerenceA = 0.0;
+		final int differentHighA = 1;
+		final double differentHighIntolerenceA = 0.1;
 		
 		final int sameLowC = 0;
 		final double sameLowIntolerenceC = 0.05;
-		final int sameHighC = 3;
-		final double sameHighIntolerenceC = 0.05;
-		final int differentLowC = 1;
-		final double differentLowIntolerenceC = 0.05;
-		final int differentHighC = 5;
-		final double differentHighIntolerenceC = 0.05;
+		final int sameHighC = 1;
+		final double sameHighIntolerenceC = 1.0;
+		final int differentLowC = 0;
+		final double differentLowIntolerenceC = 0.0;
+		final int differentHighC = 1;
+		final double differentHighIntolerenceC = 0.5;
 		
 		double jumpChance = 0.0;
 		
@@ -180,26 +180,26 @@ public class GameState {
 			}
 		}
 		//jumpChance += nondifferentIntolerence * Math.max(differentRequirement - numDifferent, 0);
-		if (numSameDiffColour < sameLowC) {
-			jumpChance += sameLowIntolerenceC;
-		} else if (numSameDiffColour > sameHighC) {
-			jumpChance += sameHighIntolerenceC;
+		if (numSameSameColour < sameLowC) {
+			jumpChance += sameLowIntolerenceC*(sameLowC-numSameSameColour);
+		} else if (numSameSameColour > sameHighC) {
+			jumpChance += sameHighIntolerenceC*(numSameSameColour-sameHighC);
 		}
-		if (numSameSameColour < sameLowA) {
-			jumpChance += sameLowIntolerenceA;
-		} else if (numSameSameColour > sameHighA) {
-			jumpChance += sameHighIntolerenceA;
+		if (numSameDiffColour < sameLowA) {
+			jumpChance += sameLowIntolerenceA*(sameLowA-numSameDiffColour);
+		} else if (numSameDiffColour > sameHighA) {
+			jumpChance += sameHighIntolerenceA*(numSameDiffColour-sameHighA);
 		}
 		
-		if (numDifferentDiffColour < differentLowC) {
-			jumpChance += differentLowIntolerenceC;
-		} else if (numDifferentDiffColour > differentHighC) {
-			jumpChance += differentHighIntolerenceC;
+		if (numDifferentSameColour < differentLowC) {
+			jumpChance += differentLowIntolerenceC*(differentLowC-numDifferentSameColour);
+		} else if (numDifferentSameColour > differentHighC) {
+			jumpChance += differentHighIntolerenceC*(numDifferentSameColour-differentHighC);
 		}
-		if (numDifferentSameColour < differentLowA) {
-			jumpChance += differentLowIntolerenceA;
-		} else if (numDifferentSameColour > differentHighA) {
-			jumpChance += differentHighIntolerenceA;
+		if (numDifferentDiffColour < differentLowA) {
+			jumpChance += differentLowIntolerenceA*(differentLowA-numDifferentDiffColour);
+		} else if (numDifferentDiffColour > differentHighA) {
+			jumpChance += differentHighIntolerenceA*(numDifferentDiffColour-differentLowA);
 		}
 		
 		Random rand = new Random();
