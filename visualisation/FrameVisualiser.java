@@ -262,7 +262,6 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 		g.setColor(winnerColor);
 		g.drawString(text, nameBox.x + (nameBox.width - (int) fR.getWidth()) / 2, nameBox.y
 				+ (nameBox.height - (int) fR.getHeight() + fm.getHeight()) / 2);
-
 	}
 
 	private Font getLargestFittingFont(Font f, Rectangle r, Graphics2D g, String s, int largestSize) {
