@@ -10,7 +10,7 @@
 #include <stdarg.h>
 #include <time.h>
 
-#include "ttd.h"
+#include "trade.h"
 
 #define VERSION			"v0.2"
 

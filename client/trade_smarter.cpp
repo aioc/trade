@@ -1,7 +1,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <ctime>
-#include "ttd.h"
+#include "trade.h"
 
 int dr[] = {-1, 0, 1, 0};
 int dc[] = {0, 1, 0, -1};
@@ -40,13 +40,9 @@ int curTurn;
 
 int haveTarget;
 
-int rep[MAX_BOARD_SIZE * MAX_BOARD_SIZE];
-
-
-
 void clientRegister(void) {
-	setName("dah-terminator");
-	setColour(0, 0, 0);
+	setName("dah-smarter");
+	setColour(56, 78, 90);
 }
 
 void clientInit(int numPlayers, int boardSize, int numResourceTypes, int startMoney, int pid) {
@@ -70,7 +66,6 @@ void clientInit(int numPlayers, int boardSize, int numResourceTypes, int startMo
 	for (i = 0; i < boardSize; i++) {
 		for (j = 0; j < boardSize; j++) {
 			onSquare[i][j] = BLANK;
-			rep[i * boardSize + j] = i * boardSize + j;
 		}
 	}
 	curTurn = 0;
@@ -164,20 +159,6 @@ int manDisP(struct producer_info p, point pp) {
 	return absV(p.r - pp.r) + absV(p.c - pp.c);
 }
 
-int findRep(int n) {
-	if (rep[n] == n) {
-		return n;
-	}
-	return rep[n] = findRep(rep[n]);
-}
-
-void join(int a, int b) {
-	rep[findRep(a)] = findRep(b);
-}
-
-int nn(int r, int c) {
-	return r * size + c;
-}
 
 int preDir[MAX_BOARD_SIZE][MAX_BOARD_SIZE];
 int dis[MAX_BOARD_SIZE][MAX_BOARD_SIZE];
@@ -219,21 +200,9 @@ void findBestCons(int p) {
 			break;
 		}
 		seen[c.r][c.c] = TRUE;
-		
-		// Check out if there are consumers
-		int isCons = FALSE;
-		int closeCon = 0;
-		for (i = 0; i < numCons; i++) {
-			if (findRep(nn(allConsumers[i].r, allConsumers[i].c)) == findRep(nn(c.r, c.c))) {
-				if (!isCons || manDis(allProducers[p], allConsumers[i]) < closeCon) {
-					isCons = TRUE;
-					closeCon = manDis(allProducers[p], allConsumers[i]);
-				}
-			}
-		}
-		if (isCons) {
+		if (onSquare[c.r][c.c] == CONSUMER) {
 			// Work out the gain we get
-			int gain = closeCon * allProducers[p].value - c.dis;
+			int gain = manDisP(allProducers[p], c) * allProducers[p].value - c.dis;
 			if (gain > bestGain && c.dis <= curMoney[myId]) {
 				bestGain = gain;
 				foundBest = TRUE;
@@ -326,7 +295,6 @@ void clientDoTurn(void) {
 			haveConnected[bestProd] = TRUE;
 		}
 		makeMove(p.r, p.c, p.dis);
-		join(nn(p.r, p.c), nn(p.r + dr[p.dis], p.c + dc[p.dis]));
 	} else {
 		makeNoMove();
 	}

@@ -1,6 +1,6 @@
 #include <cstdio>
 #include <cstdlib>
-#include "ttd.h"
+#include "trade.h"
 
 int dr[] = {-1, 0, 1, 0};
 int dc[] = {0, 1, 0, -1};
