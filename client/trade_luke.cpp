@@ -37,7 +37,7 @@ int haveConnected[MAX_PRODUCERS];
 
 // Data to keep track of the current turn.
 int curTurn;
-
+int doneGG;
 int haveTarget;
 
 int rep[MAX_BOARD_SIZE * MAX_BOARD_SIZE];
@@ -74,6 +74,7 @@ void clientInit(int numPlayers, int boardSize, int numResourceTypes, int startMo
 		}
 	}
 	curTurn = 0;
+	doneGG = FALSE;
 	haveTarget = FALSE;
 }
 
@@ -293,12 +294,22 @@ void findBestCons(int p) {
 	printf("From %d %d, to %d %d, %d\n", allProducers[p].r, allProducers[p].c, bestP.r, bestP.c, pathLength);
 }
 
+int atLineSq;
 
 int findTarget(void) {
 	// We do a dfs from each producer, to see what the maximum amount
 	// of money we can make is
 	int i;
 	bestGain = -1;
+	int amoLeft = 0;
+	for (i = 0; i < numProd; i++) {
+		if (!haveConnected[i]) {
+			amoLeft++;
+		}
+	}
+	if (amoLeft <= 1 && (!doneGG || atLineSq > 0) {
+		return FALSE;
+	}
 	for (i = 0; i < numProd; i++) {
 		// Find best consumer for this
 		if (!haveConnected[i]) {
@@ -311,6 +322,58 @@ int findTarget(void) {
 	haveTarget = TRUE;
 	return TRUE;
 }
+
+
+
+
+
+int amoLineSquares;
+point lineSquares[MAX_BOARD_SIZE * MAX_BOARD_SIZE * 10];
+
+int amoInc;
+
+void drawLine(int r1, int c1, int r2, int c2) {
+	// Need to be straight
+	c1 += amoInc;
+	c2 += amoInc;
+	int d = 0;
+	if (c1 == c2) {
+		if (r1 < r2) {
+			d = DOWN;
+		} else {
+			d = UP;
+		}
+	} else {
+		if (c1 < c2) {
+			d = RIGHT;
+		} else {
+			d = LEFT;
+		}
+	}
+	point p;
+	p.r = r1;
+	p.c = c1;
+	p.dis = d;
+	while (p.r != r2 || p.c != c2) {
+		lineSquares[amoLineSquares++] = p;
+		point oth = p;
+		oth.r += dr[(p.dis - 1 + 4) % 4];
+		oth.c += dc[(p.dis - 1 + 4) % 4];
+		lineSquares[amoLineSquares++] = oth;
+
+		oth = p;
+		oth.dis = (p.dis - 1 + 4) % 4;
+		lineSquares[amoLineSquares++] = oth;
+		
+		oth.r += dr[p.dis];
+		oth.c += dc[p.dis];
+		lineSquares[amoLineSquares++] = oth;
+
+		p.r += dr[p.dis];
+		p.c += dc[p.dis];
+	}
+}
+
 
 
 
@@ -328,7 +391,40 @@ void clientDoTurn(void) {
 		makeMove(p.r, p.c, p.dis);
 		join(nn(p.r, p.c), nn(p.r + dr[p.dis], p.c + dc[p.dis]));
 	} else {
-		makeNoMove();
+		// Spell out GG
+		if (!doneGG) {
+			doneGG = TRUE;
+			amoLineSquares = 0;
+			atLineSq = 0;
+			if (curMoney[myId] > 500) {
+				amoInc = 0;
+				drawLine(size / 4, size / 2, size / 4, size / 4);
+				drawLine(size / 4, size / 4, (size * 3) / 4, size / 4);
+				drawLine((size * 3) / 4, size / 4, (size * 3) / 4, (size * 7) / 16);
+				drawLine((size * 3) / 4, (size * 7) / 16, size / 2, (size * 7) / 16);
+				drawLine(size / 2, (size * 6) / 16, size / 2, (size * 8) / 16);
+				
+				amoInc = size / 4 + 1;
+				drawLine(size / 4, size / 2, size / 4, size / 4);
+				drawLine(size / 4, size / 4, (size * 3) / 4, size / 4);
+				drawLine((size * 3) / 4, size / 4, (size * 3) / 4, (size * 7) / 16);
+				drawLine((size * 3) / 4, (size * 7) / 16, size / 2, (size * 7) / 16);
+				drawLine(size / 2, (size * 6) / 16, size / 2, (size * 8) / 16);
+			}
+		}
+		point p = {};
+		int foundMove = FALSE;
+		while (atLineSq < amoLineSquares && !foundMove) {
+			p = lineSquares[atLineSq++];
+			if (!doesOwn[myId][p.r][p.c][p.dis]) {
+				foundMove = TRUE;
+			}
+		}
+		if (foundMove) {
+			makeMove(p.r, p.c, p.dis);
+		} else {
+			makeNoMove();
+		}
 	}
 	curTurn++;
 }
