@@ -1,7 +1,7 @@
-package games.ttd;
+package games.trade;
 
-import games.ttd.visualisation.FrameVisualiser;
-import games.ttd.visualisation.VisualGameState;
+import games.trade.visualisation.FrameVisualiser;
+import games.trade.visualisation.VisualGameState;
 
 import java.util.List;
 import java.util.Random;
@@ -14,11 +14,11 @@ import core.visualisation.EventBasedFrameVisualiser;
 
 public class GameFactory implements GameBuilder {
 
-    public int boardSize = 60;
-    public int numTypes = 4;
-    public int numProducers = 50;
-    public int numConsumers = 25;
-    public int initialMoney = 20;
+	public int boardSize = 60;
+	public int numTypes = 4;
+	public int numProducers = 50;
+	public int numConsumers = 25;
+	public int initialMoney = 20;
 
 	@Override
 	public GameInstance createGameInstance(List<PersistentPlayer> players) {
@@ -54,7 +54,8 @@ public class GameFactory implements GameBuilder {
 		}
 		GameRunner gr = new GameRunner(players, boardSize, numTypes, numProducers, numConsumers, initialMoney);
 		FrameVisualiser fv = new FrameVisualiser();
-		EventBasedFrameVisualiser<VisualGameState> vis = new EventBasedFrameVisualiser<VisualGameState>(gr, fv, new VisualGameState());
+		EventBasedFrameVisualiser<VisualGameState> vis = new EventBasedFrameVisualiser<VisualGameState>(gr, fv,
+				new VisualGameState());
 
 		// Ok, we need to get the visualGameState set up, give the EBFV to the
 		// gameState to report to, and to the gameRunner to know when to finish

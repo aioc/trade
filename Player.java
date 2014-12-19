@@ -1,4 +1,4 @@
-package games.ttd;
+package games.trade;
 
 import java.util.Random;
 
@@ -8,17 +8,16 @@ import core.server.DisconnectedException;
 
 public class Player implements PersistentPlayer {
 
-
 	private int ID;
 	private String name;
 	private ClientConnection connection;
 	private int colour;
-	
+
 	public Player(int ID, ClientConnection connection) {
 		this.ID = ID;
 		this.connection = connection;
 	}
-	
+
 	@Override
 	public int getID() {
 		return ID;
@@ -36,7 +35,7 @@ public class Player implements PersistentPlayer {
 	public void generateNewName() {
 		if (name == null) {
 			connection.sendInfo("NAME");
-			
+
 			try {
 				String inputString = connection.getStrInput();
 				String[] tokens = inputString.split("\\s");
@@ -53,8 +52,8 @@ public class Player implements PersistentPlayer {
 						return;
 					}
 					name = tokens[1];
-					//TODO handle colours being too similar to others
-					//TODO bounds checking
+					// TODO handle colours being too similar to others
+					// TODO bounds checking
 					int multiplier = 1 << 8;
 					int r = Integer.parseInt(tokens[2]);
 					int g = Integer.parseInt(tokens[3]);
@@ -82,13 +81,12 @@ public class Player implements PersistentPlayer {
 		} else {
 			name += new Random().nextInt(1000);
 		}
-        // fix this for BABMODE
-		//if (name.hashCode() == 1658738906) {
-		//	connection = new MINARWIN();
-		//	name = "Putin";
-		//}
+		// fix this for BABMODE
+		// if (name.hashCode() == 1658738906) {
+		// connection = new MINARWIN();
+		// name = "Putin";
+		// }
 	}
-	
 
 	@Override
 	public ClientConnection getConnection() {
@@ -99,8 +97,7 @@ public class Player implements PersistentPlayer {
 		return colour;
 	}
 
-	//public static boolean isMINARWIN(PersistentPlayer p) {
-	//	return p.getConnection() instanceof MINARWIN;
-	//}
+	// public static boolean isMINARWIN(PersistentPlayer p) {
+	// return p.getConnection() instanceof MINARWIN;
+	// }
 }
-

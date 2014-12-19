@@ -1,7 +1,7 @@
-package games.ttd;
+package games.trade;
 
-import games.ttd.visualisation.TTDWinnerEvent;
-import games.ttd.visualisation.VisualGameState;
+import games.trade.visualisation.TradeWinnerEvent;
+import games.trade.visualisation.VisualGameState;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -152,7 +152,7 @@ public class GameRunner implements GameHandler {
 		if (amoWinners > 1) {
 			name = "";
 		}
-		vis.giveEvent(new TTDWinnerEvent(name));
+		vis.giveEvent(new TradeWinnerEvent(name));
 		vis.giveEvent(new EndGameEvent());
 		while (!vis.finishedVisualising() && vis.isVisualising()) {
 			try {

@@ -1,8 +1,8 @@
-package games.ttd.visualisation;
+package games.trade.visualisation;
 
-import games.ttd.Consumer;
-import games.ttd.Producer;
-import games.ttd.Track;
+import games.trade.Consumer;
+import games.trade.Producer;
+import games.trade.Track;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -96,16 +96,16 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 
 	@Override
 	public void eventCreated(VisualGameEvent e) {
-		if (e instanceof TTDGainedMoneyEvent) {
-			TTDGainedMoneyEvent te = (TTDGainedMoneyEvent) e;
+		if (e instanceof TradeGainedMoneyEvent) {
+			TradeGainedMoneyEvent te = (TradeGainedMoneyEvent) e;
 			te.setTotalFrames(TRACKFRAMES);
-		} else if (e instanceof TTDLostMoneyEvent) {
-			TTDLostMoneyEvent te = (TTDLostMoneyEvent) e;
+		} else if (e instanceof TradeLostMoneyEvent) {
+			TradeLostMoneyEvent te = (TradeLostMoneyEvent) e;
 			te.setTotalFrames(TRACKFRAMES);
-		} else if (e instanceof TTDConnectedPairEvent) {} else if (e instanceof TTDWinnerEvent) {
-			((TTDWinnerEvent) e).totalFrames = 60;
+		} else if (e instanceof TradeConnectedPairEvent) {} else if (e instanceof TradeWinnerEvent) {
+			((TradeWinnerEvent) e).totalFrames = 60;
 		} else {
-			TTDGameEvent te = (TTDGameEvent) e;
+			TradeGameEvent te = (TradeGameEvent) e;
 			te.setTotalFrames(TRACKFRAMES);
 		}
 	}
@@ -121,10 +121,10 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 		g.fillRect(textBox.x, textBox.y, textBox.width, textBox.height);
 		drawStatBoxes(g, currentState, textBox);
 		for (int i = 0; i < events.size(); i++) {
-			if (events.get(i) instanceof TTDConnectedPairEvent) {
-				Consumer c = ((TTDConnectedPairEvent) events.get(i)).consumer;
-				Producer p = ((TTDConnectedPairEvent) events.get(i)).producer;
-				Color playerColour = currentState.colours[((TTDConnectedPairEvent) events.get(i)).player];
+			if (events.get(i) instanceof TradeConnectedPairEvent) {
+				Consumer c = ((TradeConnectedPairEvent) events.get(i)).consumer;
+				Producer p = ((TradeConnectedPairEvent) events.get(i)).producer;
+				Color playerColour = currentState.colours[((TradeConnectedPairEvent) events.get(i)).player];
 				Color colour = c.getColour().brighter().brighter().brighter().brighter();
 				colour = new Color((colour.getRed() + playerColour.getRed()) / 2,
 						(colour.getGreen() + playerColour.getGreen()) / 2,
@@ -140,13 +140,13 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 				g.fillRect(boardBox.x + (p.c * sizeRectWidth) - 5, boardBox.y + (p.r * sizeRectHeight) - 5,
 						sizeRectWidth - borderSquareSize + 10, sizeRectHeight - borderSquareSize + 10);
 				continue;
-			} else if (events.get(i) instanceof TTDWinnerEvent) {
-				drawWinnerBox(g, currentState, sWidth, sHeight, ((TTDWinnerEvent) events.get(i)).playerName);
+			} else if (events.get(i) instanceof TradeWinnerEvent) {
+				drawWinnerBox(g, currentState, sWidth, sHeight, ((TradeWinnerEvent) events.get(i)).playerName);
 				continue;
-			} else if (!(events.get(i) instanceof TTDGameEvent)) {
+			} else if (!(events.get(i) instanceof TradeGameEvent)) {
 				continue;
 			}
-			TTDGameEvent te = (TTDGameEvent) events.get(i);
+			TradeGameEvent te = (TradeGameEvent) events.get(i);
 			for (Track track : te.tracks) {
 				currentState.stats[te.player].tracksBought++;
 				drawTrack(g, currentState.colours[te.player], track, te.player, currentState.names.length);
@@ -283,16 +283,16 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 
 	@Override
 	public void eventEnded(VisualGameEvent e, VisualGameState state) {
-		if (e instanceof TTDGainedMoneyEvent) {
-			TTDGainedMoneyEvent te = (TTDGainedMoneyEvent) e;
+		if (e instanceof TradeGainedMoneyEvent) {
+			TradeGainedMoneyEvent te = (TradeGainedMoneyEvent) e;
 			state.money[te.player] += te.amountGained;
-		} else if (e instanceof TTDLostMoneyEvent) {
-			TTDLostMoneyEvent te = (TTDLostMoneyEvent) e;
+		} else if (e instanceof TradeLostMoneyEvent) {
+			TradeLostMoneyEvent te = (TradeLostMoneyEvent) e;
 			state.money[te.player] -= te.amountLost;
-		} else if (e instanceof TTDConnectedPairEvent) {} else if (e instanceof TTDWinnerEvent) {
-			state.winner = ((TTDWinnerEvent) e).playerName;
+		} else if (e instanceof TradeConnectedPairEvent) {} else if (e instanceof TradeWinnerEvent) {
+			state.winner = ((TradeWinnerEvent) e).playerName;
 		} else {
-			TTDGameEvent te = (TTDGameEvent) e;
+			TradeGameEvent te = (TradeGameEvent) e;
 			for (Track t : te.tracks) {
 				state.trackPlaced(t.r, t.c, te.player, t.d);
 			}

@@ -1,4 +1,4 @@
-package games.ttd;
+package games.trade;
 
 public class Statistics {
 
@@ -6,13 +6,13 @@ public class Statistics {
 	public int moneyMade;
 
 	public Statistics() {
-        tracksBought = 0;
-        moneyMade = 0;
+		tracksBought = 0;
+		moneyMade = 0;
 	}
 
 	public Statistics(Statistics s) {
-        tracksBought = s.tracksBought;
-        moneyMade = s.moneyMade;
+		tracksBought = s.tracksBought;
+		moneyMade = s.moneyMade;
 	}
 
 }

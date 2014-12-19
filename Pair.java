@@ -1,4 +1,4 @@
-package games.ttd;
+package games.trade;
 
 public class Pair<L, R> {
 	private L l;

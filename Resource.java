@@ -1,17 +1,17 @@
-package games.ttd;
+package games.trade;
 
 import java.awt.Color;
 
 class Resource {
-    public int r, c;
-    public int colour;
+	public int r, c;
+	public int colour;
 
 	public Resource(int r, int c, int colour) {
 		this.r = r;
 		this.c = c;
 		this.colour = colour;
 	}
-		
+
 	public Color getColour() {
 		final Color[] colours = new Color[8];
 		colours[0] = Color.BLUE;

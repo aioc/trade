@@ -1,28 +1,30 @@
-package games.ttd.visualisation;
+package games.trade.visualisation;
 
-import core.visualisation.VisualGameEvent;
-import games.ttd.Track;
-import games.ttd.Turn;
+import games.trade.Track;
+import games.trade.Turn;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TTDGameEvent extends VisualGameEvent {
+import core.visualisation.VisualGameEvent;
+
+public class TradeGameEvent extends VisualGameEvent {
 	public List<Track> tracks;
 	public int player;
-	
-	public TTDGameEvent() {
+
+	public TradeGameEvent() {
 		super();
 		tracks = new ArrayList<Track>();
 		player = -1;
 	}
-	
-	public TTDGameEvent(Turn lastTurn, int pid) {
+
+	public TradeGameEvent(Turn lastTurn, int pid) {
 		super();
 		tracks = new ArrayList<Track>();
 		player = pid;
 		if (lastTurn != Turn.INVALID || lastTurn != Turn.NOP) {
-			// I don't think we care about the time argument to Track here; that's only useful for state
+			// I don't think we care about the time argument to Track here;
+			// that's only useful for state
 			// This should probably be properly reworked, then.
 			tracks.add(new Track(lastTurn.r(), lastTurn.c(), -1, lastTurn.getDir()));
 		}
@@ -31,7 +33,7 @@ public class TTDGameEvent extends VisualGameEvent {
 	public void addTrack(Track track) {
 		tracks.add(track);
 	}
-	
+
 	public void setTotalFrames(int tf) {
 		this.totalFrames = tf;
 	}

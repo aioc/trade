@@ -1,16 +1,18 @@
-package games.ttd.visualisation;
+package games.trade.visualisation;
 
 import core.visualisation.VisualGameEvent;
 
-public class TTDLostMoneyEvent extends VisualGameEvent {
+public class TradeLostMoneyEvent extends VisualGameEvent {
 	public int amountLost;
 	public int player;
-	public TTDLostMoneyEvent(int amount, int pid) {
+
+	public TradeLostMoneyEvent(int amount, int pid) {
 		super();
 		this.amountLost = amount;
 		this.player = pid;
 	}
+
 	public void setTotalFrames(int frames) {
-		this.totalFrames = frames;		
+		this.totalFrames = frames;
 	}
 }

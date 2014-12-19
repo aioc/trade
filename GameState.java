@@ -1,10 +1,10 @@
-package games.ttd;
+package games.trade;
 
-import games.ttd.visualisation.TTDConnectedPairEvent;
-import games.ttd.visualisation.TTDGainedMoneyEvent;
-import games.ttd.visualisation.TTDGameEvent;
-import games.ttd.visualisation.TTDLostMoneyEvent;
-import games.ttd.visualisation.VisualGameState;
+import games.trade.visualisation.TradeConnectedPairEvent;
+import games.trade.visualisation.TradeGainedMoneyEvent;
+import games.trade.visualisation.TradeGameEvent;
+import games.trade.visualisation.TradeLostMoneyEvent;
+import games.trade.visualisation.VisualGameState;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -295,7 +295,8 @@ public class GameState {
 					int newR = cur.r + Turn.dr[k];
 					int newC = cur.c + Turn.dc[k];
 					// Do we add stuff on?
-					if (board[cur.r][cur.c][k][player] == 0) continue;
+					if (board[cur.r][cur.c][k][player] == 0)
+						continue;
 					List<GamePerson> newOwners = new ArrayList<>();
 					int bestTurn = board[cur.r][cur.c][k][player] - 1;
 					for (int i = 0; i < numPlayers; i++) {
@@ -359,11 +360,11 @@ public class GameState {
 				board[t.r()][t.c()][t.getDir()][i] = tick;
 				board[newR][newC][(t.getDir() + 2) % 4][i] = tick;
 				newP.money--;
-				vis.giveEvent(new TTDLostMoneyEvent(1, i));
+				vis.giveEvent(new TradeLostMoneyEvent(1, i));
 			}
 			allPlayers[i] = newP;
 			if (allPlayers[i].lastTurn != Turn.INVALID) {
-				vis.giveEvent(new TTDGameEvent(newP.lastTurn, i));
+				vis.giveEvent(new TradeGameEvent(newP.lastTurn, i));
 			}
 		}
 		for (int i = 0; i < numProducers; i++) {
@@ -375,13 +376,14 @@ public class GameState {
 					int amountGained = producers.get(i).payoff * manhattanDist(producers.get(i), path.getL())
 							- path.getR().size();
 					allPlayers[j].money += amountGained;
-					vis.giveEvent(new TTDConnectedPairEvent(producers.get(i), path.getL(), j));
-					vis.giveEvent(new TTDGainedMoneyEvent(amountGained, j));
+					vis.giveEvent(new TradeConnectedPairEvent(producers.get(i), path.getL(), j));
+					vis.giveEvent(new TradeGainedMoneyEvent(amountGained, j));
 					for (GamePerson p : path.getR()) {
 						int player = 0;
 						for (; player < allPlayers.length; player++)
-							if (p == allPlayers[player]) break;
-						vis.giveEvent(new TTDGainedMoneyEvent(1, player));
+							if (p == allPlayers[player])
+								break;
+						vis.giveEvent(new TradeGainedMoneyEvent(1, player));
 						p.money++;
 					}
 					paidOut[i][j] = true;

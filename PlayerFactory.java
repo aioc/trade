@@ -1,4 +1,4 @@
-package games.ttd;
+package games.trade;
 
 import core.interfaces.PersistentPlayer;
 import core.interfaces.PlayerBuilder;

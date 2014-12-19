@@ -1,4 +1,4 @@
-package games.ttd;
+package games.trade;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -14,28 +14,28 @@ public class ResourceManager {
 	private static boolean gotImage = false;
 	private static Font myFont;
 	private static Image myImage;
-	
-	
+
 	public static Font getFont() {
 		if (gotFont) {
 			return myFont;
 		}
 		try {
-            // Replace this with a game-approrpiate font.
-			myFont = Font.createFont(Font.TRUETYPE_FONT, ResourceManager.class.getResourceAsStream("red_october_regular.ttf"));
+			// Replace this with a game-approrpiate font.
+			myFont = Font.createFont(Font.TRUETYPE_FONT,
+					ResourceManager.class.getResourceAsStream("red_october_regular.ttf"));
 			gotFont = true;
 		} catch (Exception e) {
 			myFont = new Font("Serif", Font.BOLD, 24);
 		}
 		return myFont;
 	}
-	
+
 	public static Image getImage() {
 		if (gotImage) {
 			return myImage;
 		}
 		try {
-            // replace this with a game-appropriate image or etc.
+			// replace this with a game-appropriate image or etc.
 			myImage = ImageIO.read(ResourceManager.class.getResourceAsStream("heart.png"));
 		} catch (Exception e) {
 			myImage = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
@@ -46,5 +46,5 @@ public class ResourceManager {
 		}
 		return myImage;
 	}
-	
+
 }
