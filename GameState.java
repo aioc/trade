@@ -96,7 +96,7 @@ public class GameState {
 
 	private void nonbigotedGeneration() {
 		final int minPayoff = 2;
-		final int maxPayoff = 5;
+		final int maxPayoff = 4;
 		final int iterations = 100;
 
 		Random rand = new Random();
@@ -391,7 +391,8 @@ public class GameState {
 			}
 		}
 		for (Integer i : killStart) {
-			allPlayers[i].money = -9001;
+			allPlayers[i].money = -13379001;
+			vis.giveEvent(new TradeLostMoneyEvent(13379001, i));
 			// TODO: Send event
 		}
 		for (int i = 0; i < numPlayers; i++) {

@@ -154,8 +154,10 @@ public class GameRunner implements GameHandler {
 		}
 		vis.giveEvent(new TradeWinnerEvent(name));
 		vis.giveEvent(new EndGameEvent());
-		while (!vis.finishedVisualising() && vis.isVisualising()) {
+		int round = 0;
+		while (!vis.finishedVisualising() && vis.isVisualising() && round < 500) {
 			try {
+				round++;
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
