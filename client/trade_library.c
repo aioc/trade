@@ -213,7 +213,7 @@ static int handleCons(char *args) {
 static int handleYourMove(char *args) {
 	move_made = FALSE;
 	state = STATE_MAKEMOVE;
-	alarm(1);
+	alarm(2);
 	clientDoTurn();
 	alarm(0);
 	state = STATE_INTERNAL;
