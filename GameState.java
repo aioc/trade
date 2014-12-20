@@ -391,8 +391,9 @@ public class GameState {
 			}
 		}
 		for (Integer i : killStart) {
+			int diff = -13379001 - allPlayers[i].money;
 			allPlayers[i].money = -13379001;
-			vis.giveEvent(new TradeLostMoneyEvent(13379001, i));
+			vis.giveEvent(new TradeLostMoneyEvent(-diff, i));
 			// TODO: Send event
 		}
 		for (int i = 0; i < numPlayers; i++) {

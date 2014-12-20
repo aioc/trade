@@ -180,7 +180,7 @@ public class GameRunner implements GameHandler {
 	}
 
 	public int getReward(int pos) {
-		return 1 << (players.size() - pos - 1);
+		return 1 + (players.size() - pos - 1) * 10000;
 	}
 
 }
