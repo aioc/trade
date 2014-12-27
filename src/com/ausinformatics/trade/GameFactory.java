@@ -3,14 +3,13 @@ package com.ausinformatics.trade;
 import java.util.List;
 import java.util.Random;
 
+import com.ausinformatics.phais.core.interfaces.GameBuilder;
+import com.ausinformatics.phais.core.interfaces.GameInstance;
+import com.ausinformatics.phais.core.interfaces.PersistentPlayer;
+import com.ausinformatics.phais.core.server.DisconnectedException;
+import com.ausinformatics.phais.core.visualisation.EventBasedFrameVisualiser;
 import com.ausinformatics.trade.visualisation.FrameVisualiser;
 import com.ausinformatics.trade.visualisation.VisualGameState;
-
-import core.interfaces.GameBuilder;
-import core.interfaces.GameInstance;
-import core.interfaces.PersistentPlayer;
-import core.server.DisconnectedException;
-import core.visualisation.EventBasedFrameVisualiser;
 
 public class GameFactory implements GameBuilder {
 

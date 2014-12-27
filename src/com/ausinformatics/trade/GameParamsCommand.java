@@ -2,8 +2,8 @@ package com.ausinformatics.trade;
 
 import java.io.PrintStream;
 
-import core.Director;
-import core.commander.commands.Command;
+import com.ausinformatics.phais.core.Director;
+import com.ausinformatics.phais.core.commander.commands.Command;
 
 public class GameParamsCommand implements Command {
 

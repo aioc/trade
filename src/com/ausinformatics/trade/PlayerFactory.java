@@ -1,8 +1,8 @@
 package com.ausinformatics.trade;
 
-import core.interfaces.PersistentPlayer;
-import core.interfaces.PlayerBuilder;
-import core.server.ClientConnection;
+import com.ausinformatics.phais.core.interfaces.PersistentPlayer;
+import com.ausinformatics.phais.core.interfaces.PlayerBuilder;
+import com.ausinformatics.phais.core.server.ClientConnection;
 
 public class PlayerFactory implements PlayerBuilder {
 

@@ -1,6 +1,6 @@
 package com.ausinformatics.trade.visualisation;
 
-import core.visualisation.VisualGameEvent;
+import com.ausinformatics.phais.core.visualisation.VisualGameEvent;
 
 public class TradeWinnerEvent extends VisualGameEvent {
 	public String playerName;

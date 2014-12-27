@@ -10,12 +10,11 @@ import java.awt.Stroke;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 
+import com.ausinformatics.phais.core.visualisation.FrameVisualisationHandler;
+import com.ausinformatics.phais.core.visualisation.VisualGameEvent;
 import com.ausinformatics.trade.Consumer;
 import com.ausinformatics.trade.Producer;
 import com.ausinformatics.trade.Track;
-
-import core.visualisation.FrameVisualisationHandler;
-import core.visualisation.VisualGameEvent;
 
 public class FrameVisualiser implements FrameVisualisationHandler<VisualGameState> {
 

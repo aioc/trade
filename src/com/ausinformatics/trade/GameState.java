@@ -7,14 +7,13 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Random;
 
+import com.ausinformatics.phais.core.interfaces.PersistentPlayer;
+import com.ausinformatics.phais.core.visualisation.EventBasedFrameVisualiser;
 import com.ausinformatics.trade.visualisation.TradeConnectedPairEvent;
 import com.ausinformatics.trade.visualisation.TradeGainedMoneyEvent;
 import com.ausinformatics.trade.visualisation.TradeGameEvent;
 import com.ausinformatics.trade.visualisation.TradeLostMoneyEvent;
 import com.ausinformatics.trade.visualisation.VisualGameState;
-
-import core.interfaces.PersistentPlayer;
-import core.visualisation.EventBasedFrameVisualiser;
 
 public class GameState {
 

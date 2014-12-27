@@ -2,9 +2,9 @@ package com.ausinformatics.trade;
 
 import java.util.Random;
 
-import core.interfaces.PersistentPlayer;
-import core.server.ClientConnection;
-import core.server.DisconnectedException;
+import com.ausinformatics.phais.core.interfaces.PersistentPlayer;
+import com.ausinformatics.phais.core.server.ClientConnection;
+import com.ausinformatics.phais.core.server.DisconnectedException;
 
 public class Player implements PersistentPlayer {
 

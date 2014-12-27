@@ -3,10 +3,9 @@ package com.ausinformatics.trade.visualisation;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ausinformatics.phais.core.visualisation.VisualGameEvent;
 import com.ausinformatics.trade.Track;
 import com.ausinformatics.trade.Turn;
-
-import core.visualisation.VisualGameEvent;
 
 public class TradeGameEvent extends VisualGameEvent {
 	public List<Track> tracks;
