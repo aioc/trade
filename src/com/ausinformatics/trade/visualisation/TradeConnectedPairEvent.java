@@ -1,7 +1,8 @@
 package com.ausinformatics.trade.visualisation;
 
-import games.trade.Consumer;
-import games.trade.Producer;
+import com.ausinformatics.trade.Consumer;
+import com.ausinformatics.trade.Producer;
+
 import core.visualisation.VisualGameEvent;
 
 public class TradeConnectedPairEvent extends VisualGameEvent {

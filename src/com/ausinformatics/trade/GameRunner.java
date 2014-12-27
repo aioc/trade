@@ -1,13 +1,13 @@
 package com.ausinformatics.trade;
 
-import games.trade.visualisation.TradeWinnerEvent;
-import games.trade.visualisation.VisualGameState;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.ausinformatics.trade.visualisation.TradeWinnerEvent;
+import com.ausinformatics.trade.visualisation.VisualGameState;
 
 import core.interfaces.PersistentPlayer;
 import core.server.ClientConnection;

@@ -1,10 +1,10 @@
 package com.ausinformatics.trade;
 
-import games.trade.visualisation.FrameVisualiser;
-import games.trade.visualisation.VisualGameState;
-
 import java.util.List;
 import java.util.Random;
+
+import com.ausinformatics.trade.visualisation.FrameVisualiser;
+import com.ausinformatics.trade.visualisation.VisualGameState;
 
 import core.interfaces.GameBuilder;
 import core.interfaces.GameInstance;

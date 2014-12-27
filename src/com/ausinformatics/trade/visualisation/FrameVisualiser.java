@@ -1,9 +1,5 @@
 package com.ausinformatics.trade.visualisation;
 
-import games.trade.Consumer;
-import games.trade.Producer;
-import games.trade.Track;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -13,6 +9,10 @@ import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
+
+import com.ausinformatics.trade.Consumer;
+import com.ausinformatics.trade.Producer;
+import com.ausinformatics.trade.Track;
 
 import core.visualisation.FrameVisualisationHandler;
 import core.visualisation.VisualGameEvent;

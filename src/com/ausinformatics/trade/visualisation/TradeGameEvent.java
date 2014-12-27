@@ -1,10 +1,10 @@
 package com.ausinformatics.trade.visualisation;
 
-import games.trade.Track;
-import games.trade.Turn;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.ausinformatics.trade.Track;
+import com.ausinformatics.trade.Turn;
 
 import core.visualisation.VisualGameEvent;
 

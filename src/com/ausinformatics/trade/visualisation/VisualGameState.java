@@ -1,12 +1,12 @@
 package com.ausinformatics.trade.visualisation;
 
-import games.trade.Consumer;
-import games.trade.Producer;
-import games.trade.Statistics;
-
 import java.awt.Color;
 import java.util.List;
 import java.util.Random;
+
+import com.ausinformatics.trade.Consumer;
+import com.ausinformatics.trade.Producer;
+import com.ausinformatics.trade.Statistics;
 
 public class VisualGameState {
 	public int boardSize = 0;
