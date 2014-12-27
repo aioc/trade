@@ -49,13 +49,13 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 		sizeSquare = sizeBoard / s.boardSize;
 		borderSquareSize = (sizeSquare / SQUARE_BORDER_DIVSOR) + 1;
 		// Draw background
-		g.setColor(Color.BLACK);
+		g.setColor(Color.WHITE);
 		g.fillRect(paintBox.x, paintBox.y, paintBox.width, paintBox.height);
 		g.setColor(Color.LIGHT_GRAY.brighter());
 		for (int i = 0; i < s.boardSize; i++) {
 			for (int j = 0; j < s.boardSize; j++) {
-				g.fillRect(boardBox.x + (j * sizeRectWidth), boardBox.y + (i * sizeRectHeight), sizeRectWidth
-						- borderSquareSize, sizeRectHeight - borderSquareSize);
+				/*g.fillRect(boardBox.x + (j * sizeRectWidth), boardBox.y + (i * sizeRectHeight), sizeRectWidth
+						- borderSquareSize, sizeRectHeight - borderSquareSize);*/
 			}
 		}
 		for (Producer p : s.producers) {
