@@ -1,10 +1,4 @@
-package games.trade;
-
-import games.trade.visualisation.TradeConnectedPairEvent;
-import games.trade.visualisation.TradeGainedMoneyEvent;
-import games.trade.visualisation.TradeGameEvent;
-import games.trade.visualisation.TradeLostMoneyEvent;
-import games.trade.visualisation.VisualGameState;
+package com.ausinformatics.trade;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -12,6 +6,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Random;
+
+import com.ausinformatics.trade.visualisation.TradeConnectedPairEvent;
+import com.ausinformatics.trade.visualisation.TradeGainedMoneyEvent;
+import com.ausinformatics.trade.visualisation.TradeGameEvent;
+import com.ausinformatics.trade.visualisation.TradeLostMoneyEvent;
+import com.ausinformatics.trade.visualisation.VisualGameState;
 
 import core.interfaces.PersistentPlayer;
 import core.visualisation.EventBasedFrameVisualiser;

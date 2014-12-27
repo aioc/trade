@@ -1,4 +1,4 @@
-package games.trade;
+package com.ausinformatics.trade;
 
 import java.awt.Color;
 import java.awt.Font;

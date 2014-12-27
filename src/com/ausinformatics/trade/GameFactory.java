@@ -1,4 +1,4 @@
-package games.trade;
+package com.ausinformatics.trade;
 
 import games.trade.visualisation.FrameVisualiser;
 import games.trade.visualisation.VisualGameState;

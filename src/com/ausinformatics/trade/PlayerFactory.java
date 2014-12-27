@@ -1,4 +1,4 @@
-package games.trade;
+package com.ausinformatics.trade;
 
 import core.interfaces.PersistentPlayer;
 import core.interfaces.PlayerBuilder;

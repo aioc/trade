@@ -1,4 +1,4 @@
-package games.trade.visualisation;
+package com.ausinformatics.trade.visualisation;
 
 import games.trade.Consumer;
 import games.trade.Producer;

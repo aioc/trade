@@ -1,4 +1,4 @@
-package games.trade;
+package com.ausinformatics.trade;
 
 import java.util.ArrayList;
 import java.util.List;

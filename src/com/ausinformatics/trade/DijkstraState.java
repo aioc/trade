@@ -1,4 +1,4 @@
-package games.trade;
+package com.ausinformatics.trade;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,6 @@ public class DijkstraState implements Comparable<DijkstraState> {
 		this.otherTracksUsed = new ArrayList<>(d.otherTracksUsed);
 	}
 
-	@Override
 	public int compareTo(DijkstraState o) {
 		return cost - o.cost;
 	}

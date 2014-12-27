@@ -1,4 +1,4 @@
-package games.trade;
+package com.ausinformatics.trade;
 
 public class Producer extends Resource {
 	public int payoff;

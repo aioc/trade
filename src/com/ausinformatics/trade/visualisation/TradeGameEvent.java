@@ -1,4 +1,4 @@
-package games.trade.visualisation;
+package com.ausinformatics.trade.visualisation;
 
 import games.trade.Track;
 import games.trade.Turn;

@@ -1,4 +1,4 @@
-package games.trade.visualisation;
+package com.ausinformatics.trade.visualisation;
 
 import games.trade.Consumer;
 import games.trade.Producer;
@@ -35,7 +35,6 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 
 	Color winnerColor = null;
 
-	@Override
 	public void generateBackground(VisualGameState s, int sWidth, int sHeight, Graphics2D g) {
 		paintBox = new Rectangle(BORDER_SIZE, BORDER_SIZE, sWidth - (2 * BORDER_SIZE), sHeight - (2 * BORDER_SIZE));
 		sizeBoard = Math.min(paintBox.height - (2 * BORDER_SIZE), (3 * (paintBox.width - (2 * BORDER_SIZE))) / 5);
@@ -70,7 +69,6 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 		}
 	}
 
-	@Override
 	public void generateState(VisualGameState state, int sWidth, int sHeight, Graphics2D g) {
 		boolean board[][][][] = state.getBoard();
 		final Stroke currentStroke = g.getStroke();
@@ -94,7 +92,6 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 		g.setStroke(currentStroke);
 	}
 
-	@Override
 	public void eventCreated(VisualGameEvent e) {
 		if (e instanceof TradeGainedMoneyEvent) {
 			TradeGainedMoneyEvent te = (TradeGainedMoneyEvent) e;
@@ -110,7 +107,6 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 		}
 	}
 
-	@Override
 	public void animateEvents(VisualGameState currentState, List<VisualGameEvent> events, int sWidth, int sHeight,
 			Graphics2D g) {
 		Rectangle textBox = new Rectangle(boardBox.x + boardBox.width + BORDER_SIZE, paintBox.y + BORDER_SIZE,
@@ -281,7 +277,6 @@ public class FrameVisualiser implements FrameVisualisationHandler<VisualGameStat
 		return f.deriveFont(minSize);
 	}
 
-	@Override
 	public void eventEnded(VisualGameEvent e, VisualGameState state) {
 		if (e instanceof TradeGainedMoneyEvent) {
 			TradeGainedMoneyEvent te = (TradeGainedMoneyEvent) e;

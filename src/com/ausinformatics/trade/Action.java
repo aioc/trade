@@ -1,4 +1,4 @@
-package games.trade;
+package com.ausinformatics.trade;
 
 import core.server.ClientConnection;
 import core.server.DisconnectedException;

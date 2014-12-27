@@ -1,4 +1,4 @@
-package games.trade;
+package com.ausinformatics.trade;
 
 public class Track {
 	public int r, c;
